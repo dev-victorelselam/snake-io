@@ -2,7 +2,7 @@
 {
     public interface IContext
     {
-        string Environment { get; }
+        Environment Environment { get; }
         GameSetup GameSetup { get; }
         NavigationController NavigationController { get; }
         Characters Characters { get; }

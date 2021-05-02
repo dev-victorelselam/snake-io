@@ -4,11 +4,11 @@ using Context;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Tutorial
+namespace Tutorial.KeyDetector
 {
-    public class KeyDetector : MonoBehaviour
+    public class InputKeyProvider : MonoBehaviour, IKeyProvider
     {
-        [HideInInspector] public UnityEvent<List<KeyCode>> OnComplete = new UnityEvent<List<KeyCode>>();
+        public UnityEvent<List<KeyCode>> OnComplete { get; } = new UnityEvent<List<KeyCode>>();
         
         private bool _enabled;
         private List<KeyCode> _keys;
@@ -22,10 +22,10 @@ namespace Tutorial
             _availableKeys = ContextProvider.Context.AvailableKeys;
             
             _enabled = true;
-        } 
-        
-        public void Disable() => _enabled = false;
+        }
 
+        private void Disable() => _enabled = false;
+        
         public void Update()
         {
             if (!_enabled)

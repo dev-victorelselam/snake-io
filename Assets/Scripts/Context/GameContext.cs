@@ -23,6 +23,6 @@ namespace Context
         public NavigationController NavigationController { get; }
         public GameSetup GameSetup { get; }
         public Characters Characters { get; }
-        public string Environment => "Game";
+        public Environment Environment => Environment.Game;
     }
 }

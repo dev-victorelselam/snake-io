@@ -90,8 +90,13 @@
      <Compile Include="Assets\Scripts\_Tests\AssertMonoBehaviour.cs" />
      <Compile Include="Assets\Scripts\_Tests\IAssert.cs" />
      <Compile Include="Assets\Scripts\_Tests\TestContext.cs" />
-     <Compile Include="Assets\Scripts\Tutorial\KeyDetector.cs" />
+     <Compile Include="Assets\Scripts\Tutorial\KeyDetector\KeyDetector.cs" />
      <Compile Include="Assets\Scripts\_Tests\KeyDetector\KeyDetectorTest.cs" />
+     <Compile Include="Assets\Scripts\Context\Environment.cs" />
+     <Compile Include="Assets\Scripts\Tutorial\KeyDetector\TestKeyProvider.cs" />
+     <Compile Include="Assets\Scripts\Tutorial\KeyDetector\InputKeyProvider.cs" />
+     <Compile Include="Assets\Scripts\Tutorial\KeyDetector\IKeyProvider.cs" />
+     <Compile Include="Assets\Scripts\Tutorial\KeyDetector\KeyProviderFactoring.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />

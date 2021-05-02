@@ -24,6 +24,6 @@ namespace _Tests
         public NavigationController NavigationController { get; }
         public GameSetup GameSetup { get; }
         public Characters Characters { get; }
-        public string Environment => "Test";
+        public Environment Environment => Environment.Test;
     }
 }

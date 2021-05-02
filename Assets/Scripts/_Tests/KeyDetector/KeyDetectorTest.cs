@@ -17,23 +17,23 @@ namespace _Tests.KeyDetector
         {
             Setup("[HintTest]", _navigationController, _gameController, _popupUtility, GameSetup);
 
-            var keyDetector = gameObject.AddComponent<Tutorial.KeyDetector>();
-            keyDetector.OnComplete.AddListener(KeyDetected);
-            keyDetector.Enable();
+            var keyDetector = gameObject.AddComponent<Tutorial.KeyDetector.KeyDetector>();
+            keyDetector.OnComplete.AddListener(KeysDetected);
+            keyDetector.StartListen();
 
             while (_keysDetected == null)
                 await Task.Delay(50);
         
             Assert(() => _keysDetected[0])
-                .ShouldBe(KeyCode.A).Because($"Key Provider specified that {KeyCode.A} is the first key").Run();
+                .ShouldBe(KeyCode.A).Because($"Test Key Provider specified that {KeyCode.A} is the first key").Run();
         
             Assert(() => _keysDetected[1])
-                .ShouldBe(KeyCode.D).Because($"Key Provider specified that {KeyCode.D} is the first key").Run();
+                .ShouldBe(KeyCode.D).Because($"Test Key Provider specified that {KeyCode.D} is the first key").Run();
         
             Finish();
         }
 
-        private void KeyDetected(List<KeyCode> keys)
+        private void KeysDetected(List<KeyCode> keys)
         {
             _keysDetected = keys;
         }

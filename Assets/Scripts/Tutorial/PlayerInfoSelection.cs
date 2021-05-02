@@ -14,7 +14,7 @@ namespace Tutorial
         [SerializeField] private InputField _userName;
         [SerializeField] private Button _finishConfiguration;
         [SerializeField] private Keyboard _keyboard;
-        [SerializeField] private KeyDetector _keyDetector;
+        [SerializeField] private KeyDetector.KeyDetector _keyDetector;
         
         private PlayerConfig _playerConfig;
 
@@ -34,7 +34,7 @@ namespace Tutorial
             _finishConfiguration.enabled = false;
             
             _keyboard.Initialize();
-            _keyDetector.Enable();
+            _keyDetector.StartListen();
             _keyDetector.OnComplete.AddListener(ConfirmButtonsDialog);
         }
         
@@ -42,7 +42,7 @@ namespace Tutorial
         {
             PopupUtility.Instance.ShowDialog($"Os botões escolhidos foram: {keys[0]} e {keys[1]}", 
                 () => AssignKeys(keys), 
-                () => _keyDetector.Enable());
+                () => _keyDetector.StartListen());
         }
 
         private void AssignKeys(IReadOnlyList<KeyCode> keys)
