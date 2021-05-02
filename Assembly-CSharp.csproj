@@ -12,7 +12,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{f32d0eeb-62c7-ddc3-3db7-caa294ccd32f}</ProjectGuid>
+    <ProjectGuid>{d645723a-f1d4-864e-4264-2a3d3868987f}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -50,41 +50,48 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Context\ContextProvider.cs" />
-     <Compile Include="Assets\Scripts\Context\IContext.cs" />
-     <Compile Include="Assets\Scripts\Context\SnakeElement.cs" />
+     <Compile Include="Assets\Scripts\Game\SnakeElement.cs" />
      <Compile Include="Assets\Scripts\Context\CharacterSettings.cs" />
      <Compile Include="Assets\Scripts\Context\PopupUtility.cs" />
+     <Compile Include="Assets\Scripts\Context\IContext.cs" />
      <Compile Include="Assets\Scripts\GameActors\BlockView.cs" />
      <Compile Include="Assets\Scripts\UI\MainButton.cs" />
      <Compile Include="Assets\Scripts\GameActors\IAController.cs" />
      <Compile Include="Assets\Scripts\Context\GameContext.cs" />
-     <Compile Include="Assets\Scripts\UI\CharacterCard.cs" />
+     <Compile Include="Assets\Scripts\Tutorial\CharacterCard.cs" />
      <Compile Include="Assets\Scripts\Context\BlockModel.cs" />
      <Compile Include="Assets\Scripts\GameActors\BlockFactoring.cs" />
      <Compile Include="Assets\Scripts\UI\StartCanvas.cs" />
      <Compile Include="Assets\Scripts\Context\GameController.cs" />
      <Compile Include="Assets\Scripts\GameActors\BlockType.cs" />
-     <Compile Include="Assets\Scripts\Context\CharacterOptions.cs" />
-     <Compile Include="Assets\Scripts\UI\CharacterSelection.cs" />
-     <Compile Include="Assets\Scripts\UI\TutorialCanvas.cs" />
-     <Compile Include="Assets\Scripts\Context\SnakeSnapshot.cs" />
+     <Compile Include="Assets\Scripts\Tutorial\Characters.cs" />
+     <Compile Include="Assets\Scripts\Tutorial\CharacterSelection.cs" />
+     <Compile Include="Assets\Scripts\Tutorial\TutorialCanvas.cs" />
+     <Compile Include="Assets\Scripts\Game\SnakeSnapshot.cs" />
      <Compile Include="Assets\Scripts\UI\GameCanvas.cs" />
      <Compile Include="Assets\Scripts\GameActors\SnakeController.cs" />
      <Compile Include="Assets\Scripts\Context\Extensions.cs" />
      <Compile Include="Assets\Scripts\Context\GameStart.cs" />
      <Compile Include="Assets\Scripts\Context\GameSetup.cs" />
-     <Compile Include="Assets\Scripts\UI\Key.cs" />
+     <Compile Include="Assets\Scripts\Tutorial\Key.cs" />
      <Compile Include="Assets\Scripts\GameActors\MoveType.cs" />
      <Compile Include="Assets\Scripts\UI\PlayerConfig.cs" />
      <Compile Include="Assets\Scripts\GameActors\MovementController.cs" />
-     <Compile Include="Assets\Scripts\UI\PlayerInfoSelection.cs" />
-     <Compile Include="Assets\Scripts\Context\GameState.cs" />
+     <Compile Include="Assets\Scripts\Tutorial\PlayerInfoSelection.cs" />
+     <Compile Include="Assets\Scripts\Game\GameState.cs" />
      <Compile Include="Assets\Scripts\GameActors\SpeedBlockView.cs" />
-     <Compile Include="Assets\Scripts\Context\AvailableKeys.cs" />
+     <Compile Include="Assets\Scripts\Tutorial\AvailableKeys.cs" />
      <Compile Include="Assets\Scripts\UI\IGameUI.cs" />
-     <Compile Include="Assets\Scripts\UI\Keyboard.cs" />
+     <Compile Include="Assets\Scripts\Tutorial\Keyboard.cs" />
+     <Compile Include="Assets\Scripts\Context\ContextProvider.cs" />
      <Compile Include="Assets\Scripts\Context\NavigationController.cs" />
+     <Compile Include="Assets\Scripts\_Tests\AssertObject.cs" />
+     <Compile Include="Assets\Scripts\_Tests\AssertPrefab.cs" />
+     <Compile Include="Assets\Scripts\_Tests\AssertMonoBehaviour.cs" />
+     <Compile Include="Assets\Scripts\_Tests\IAssert.cs" />
+     <Compile Include="Assets\Scripts\_Tests\TestContext.cs" />
+     <Compile Include="Assets\Scripts\Tutorial\KeyDetector.cs" />
+     <Compile Include="Assets\Scripts\_Tests\KeyDetector\KeyDetectorTest.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
@@ -107,34 +114,34 @@
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
  <Reference Include="Unity.Timeline.Editor">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.VSCode.Editor">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro.Editor">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.UI">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Timeline">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Rider.Editor">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.2D.Sprite.Editor">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.VisualStudio.Editor">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/Unity.VisualStudio.Editor.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.VisualStudio.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.UI">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.1.16f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
@@ -326,10 +333,10 @@
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.1.16f1/Editor/Data/Managed/UnityEditor.dll</HintPath>
  </Reference>
  <Reference Include="DOTween">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Assets/Plugins/Demigiant/DOTween/DOTween.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Assets/Plugins/Demigiant/DOTween/DOTween.dll</HintPath>
  </Reference>
  <Reference Include="nunit.framework">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/PackageCache/com.unity.ext.nunit@1.0.5/net35/unity-custom/nunit.framework.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/PackageCache/com.unity.ext.nunit@1.0.5/net35/unity-custom/nunit.framework.dll</HintPath>
  </Reference>
  <Reference Include="netstandard">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.1.16f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>
@@ -679,7 +686,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{b0d8afb2-0e18-4e7e-478a-acfd3d2d2882}</Project>
+      <Project>{9777e3e8-3cff-09e9-1c38-bd49a10c60a3}</Project>
       <Name>Assembly-CSharp-firstpass</Name>
     </ProjectReference>
   </ItemGroup>

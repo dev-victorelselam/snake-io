@@ -1,0 +1,63 @@
+# =============== #
+# Unity generated #
+# =============== #
+[Tt]emp/
+[Oo]bj/
+[Bb]uild
+/[Ll]ibrary/
+sysinfo.txt
+*.stackdump
+EditorBuildSettings.asset
+Assets/Projects/Global/App Settings.asset
+analytics*.txt
+[Uu]serSettings/
+
+# ============================================= #
+# Visual Studio / MonoDevelop / Rider generated #
+# ============================================= #
+[Ee]xported[Oo]bj/
+.vs/
+.vscode/
+/*.userprefs
+/*.csproj
+/*.pidb
+/*.suo
+/*.sln*
+/*.user
+/*.unityproj
+/*.booproj
+/.idea*/
+
+*.pdb
+*.pdb.meta
+
+# ============ #
+# OS generated #
+# ============ #
+.DS_Store*
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+[Tt]humbs.db
+[Dd]esktop.ini
+
+Assets/Projects/Projects 003 - Minigames.meta
+Analytics.json
+Assets/Plugins/Sirenix/Assemblies/Editor/GeneratedOdinEditors.dll
+Assets/Plugins/Sirenix/Assemblies/Editor/GeneratedOdinEditors.dll.mdb
+BuildsAndroid
+Coupons/*.csv
+/*.png
+Fofuuu.Core/*/bin/
+Assets/Resources/SharedAssets/NPSettings.asset.meta
+Assets/Resources/SharedAssets/NPSettings.asset
+*.aar
+*.aar.meta
+ProjectSettings/AndroidResolverDependencies.xml
+Assets/Plugins/Android/Firebase/res/values/google-services.xml
+Assets/Plugins/Android/AndroidManifest.xml
+remote_config_data
+
+Assets/Fofuuu/Scripts/Platform/BundleVersion.cs
+Assets/Fofuuu/Scripts/Platform/BundleVersion.cs.meta

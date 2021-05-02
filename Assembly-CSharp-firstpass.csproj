@@ -12,7 +12,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{b0d8afb2-0e18-4e7e-478a-acfd3d2d2882}</ProjectGuid>
+    <ProjectGuid>{9777e3e8-3cff-09e9-1c38-bd49a10c60a3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp-firstpass</AssemblyName>
@@ -59,34 +59,34 @@
      <Compile Include="Assets\Plugins\Demigiant\DOTween\Modules\DOTweenModuleUI.cs" />
      <None Include="Assets\Plugins\Demigiant\DOTween\readme.txt" />
  <Reference Include="Unity.Timeline.Editor">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.VSCode.Editor">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro.Editor">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.UI">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Timeline">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Rider.Editor">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.2D.Sprite.Editor">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.VisualStudio.Editor">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/Unity.VisualStudio.Editor.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.VisualStudio.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.UI">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.1.16f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
@@ -278,10 +278,10 @@
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.1.16f1/Editor/Data/Managed/UnityEditor.dll</HintPath>
  </Reference>
  <Reference Include="DOTween">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Assets/Plugins/Demigiant/DOTween/DOTween.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Assets/Plugins/Demigiant/DOTween/DOTween.dll</HintPath>
  </Reference>
  <Reference Include="nunit.framework">
- <HintPath>F:/Victor/Documents/PersonalProjects/Snake-io/Library/PackageCache/com.unity.ext.nunit@1.0.5/net35/unity-custom/nunit.framework.dll</HintPath>
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/PackageCache/com.unity.ext.nunit@1.0.5/net35/unity-custom/nunit.framework.dll</HintPath>
  </Reference>
  <Reference Include="netstandard">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.1.16f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>
