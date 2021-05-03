@@ -33,19 +33,19 @@ namespace Tutorial
 
         private void CharacterSelection()
         {
-            _characterSelection.Show(_context.Characters.All, new PlayerConfig());
+            _characterSelection.Show(_context.Characters.All, PlayerCreator.New());
             ChangeStep(1);
         }
         
-        private void PlayerInfoSelection(PlayerConfig playerConfig)
+        private void PlayerInfoSelection(PlayerModel playerModel)
         {
-            _playerInfoSelection.Show(playerConfig);
+            _playerInfoSelection.Show(playerModel);
             ChangeStep(2);
         }
 
-        private void StartGame(PlayerConfig playerConfig)
+        private void StartGame(PlayerModel playerModel)
         {
-            _context.GameController.AddPlayer(playerConfig);
+            _context.GameController.AddPlayer(playerModel);
             _context.NavigationController.UpdateUI(GameState.Game);
         }
 

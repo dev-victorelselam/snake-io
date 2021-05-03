@@ -1,5 +1,4 @@
 ﻿using System;
-using Context;
 using Game;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,25 +8,24 @@ namespace GameActors.Blocks
     [RequireComponent(typeof(Rigidbody), typeof(Collider))]
     public class BlockView : MonoBehaviour, IHittable
     {
-        public UnityEvent<IHittable> OnContact = new UnityEvent<IHittable>();
+        public UnityEvent<BlockView, IHittable> OnContact = new UnityEvent<BlockView, IHittable>();
         
-        public BlockType BlockType { get; set; }
+        public BlockType BlockType { get; private set; }
         private BlockView _next;
+        private BlockView _previous;
         public Collider Collider { get; private set; }
         
-        public Type Type => this.GetType();
-        private bool HasNextBlock => _next != null;
+        private bool IsTail => _next == null;
+        public bool IsHead => _previous == null;
 
         private void Awake()
         {
             Collider = GetComponent<Collider>();
         }
-        
-        public void SetNextPart(BlockView blockView) => _next = blockView;
 
         public void Move(float speed, MoveType moveType)
         {
-            if (HasNextBlock)
+            if (!IsTail)
                 _next.Move(new TransformSnapshot(this));
             
             MoveDirection(moveType);
@@ -37,7 +35,7 @@ namespace GameActors.Blocks
         
         public void Move(TransformSnapshot transformSnapshot)
         {
-            if (HasNextBlock)
+            if (!IsTail)
                 _next.Move(new TransformSnapshot(this));
             
             transform.position = transformSnapshot.Position;
@@ -67,7 +65,11 @@ namespace GameActors.Blocks
             if (hittable == null)
                 return;
             
-            OnContact.Invoke(hittable);
+            OnContact.Invoke(this, hittable);
         }
+
+        public void SetNextPart(BlockView blockView) => _next = blockView;
+        public void SetPreviousPart(BlockView blockView) => _previous = blockView;
+        public void SetBlockType(BlockType blockType) => BlockType = blockType;
     }
 }

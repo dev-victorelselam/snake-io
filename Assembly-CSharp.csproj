@@ -87,7 +87,7 @@
      <Compile Include="Assets\Scripts\Tutorial\Key.cs" />
      <Compile Include="Assets\Scripts\Tutorial\KeyDetector\IKeyProvider.cs" />
      <Compile Include="Assets\Scripts\GameActors\MoveType.cs" />
-     <Compile Include="Assets\Scripts\UI\PlayerConfig.cs" />
+     <Compile Include="Assets\Scripts\Game\PlayerModel.cs" />
      <Compile Include="Assets\Scripts\GameActors\MovementController.cs" />
      <Compile Include="Assets\Scripts\Tutorial\PlayerInfoSelection.cs" />
      <Compile Include="Assets\Scripts\Game\GameState.cs" />

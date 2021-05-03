@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using GameActors.Blocks.Consumables;
+using UnityEngine;
 
 namespace Context
 {
@@ -55,6 +56,7 @@ namespace Context
         [Header("Snake Gameplay Configs")]
         [Space(10)]
         public GameObject SnakePrefab;
+        public ConsumableBlock ConsumableBlockPrefab;
         [Range(0, 10)] public float BaseSpeed;
         [Range(0, 1)] public float LoadedSpeedDecay;
         public BlockModel[] Blocks;

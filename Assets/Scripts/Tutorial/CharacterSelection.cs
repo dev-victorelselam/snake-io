@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Context;
 using DG.Tweening;
+using Game;
 using UI;
 using UnityEngine;
 using UnityEngine.Events;
@@ -10,7 +11,7 @@ namespace Tutorial
 {
     public class CharacterSelection : MonoBehaviour
     {
-        public UnityEvent<PlayerConfig> OnCharacterSelected = new UnityEvent<PlayerConfig>();
+        public UnityEvent<PlayerModel> OnCharacterSelected = new UnityEvent<PlayerModel>();
         
         [SerializeField] private ScrollRect _charactersScroll;
         [SerializeField] private Button _nextCard;
@@ -22,7 +23,7 @@ namespace Tutorial
         
         private float ScrollStep => 1 / ((float) _cards.Count - 1);
         private readonly List<CharacterCard> _cards = new List<CharacterCard>();
-        private PlayerConfig _playerConfig;
+        private PlayerModel _playerModel;
 
         private void Awake()
         {
@@ -30,7 +31,7 @@ namespace Tutorial
             _previousCard.onClick.AddListener(PreviousCard);
         }
         
-        public void Show(List<CharacterSettings> characterSettings, PlayerConfig playerConfig)
+        public void Show(List<CharacterSettings> characterSettings, PlayerModel playerModel)
         {
             //optionally, we could destroy all cards and rebuild.
             //if we had a feature of creating new characters in runtime for example
@@ -45,13 +46,13 @@ namespace Tutorial
                 obj.OnCharacterSelected.AddListener(CharacterSelected);
             }
 
-            _playerConfig = playerConfig;
+            _playerModel = playerModel;
         }
 
         private void CharacterSelected(CharacterSettings character)
         {
-            _playerConfig.Character = character;
-            OnCharacterSelected.Invoke(_playerConfig);
+            _playerModel.Character = character;
+            OnCharacterSelected.Invoke(_playerModel);
         }
 
         private void NextCard()

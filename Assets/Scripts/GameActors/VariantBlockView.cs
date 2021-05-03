@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using GameActors.Blocks;
 using UnityEngine;
 
@@ -12,24 +14,26 @@ namespace GameActors
 
         private void Start()
         {
-            var allBlocks = Enum.GetValues(typeof(BlockType));
+            var allBlocks = Enum.GetValues(typeof(BlockType)).Cast<BlockType>();
             StartCoroutine(StartChanging(allBlocks));
         }
 
-        private IEnumerator StartChanging(Array blockTypes)
+        private IEnumerator StartChanging(IEnumerable<BlockType> blockTypes)
         {
-            foreach (BlockType blockType in blockTypes)
+            var types = blockTypes as BlockType[] ?? blockTypes.ToArray();
+            foreach (var blockType in types)
             {
                 if (_block)
                     Destroy(_block.gameObject);
                 
                 _block = BlockFactoring.CreateInstance(transform, blockType);
-                BlockType = blockType;
+                Destroy(_block.Collider);
+                SetBlockType(blockType);
                 yield return new WaitForSeconds(_timeToChange);
             }
 
-            //we want this to repeat when all blocks were used
-            StartCoroutine(StartChanging(blockTypes));
+            //we want this to repeat when all blocks were used (inverting sequence)
+            StartCoroutine(StartChanging(types.Reverse()));
         }
     }
 }

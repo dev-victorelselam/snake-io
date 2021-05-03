@@ -5,7 +5,7 @@ namespace GameActors.Blocks
 {
     public class SpeedBlockView : BlockView
     {
-        enum SpeedModifierType
+        private enum SpeedModifierType
         {
             Sum,
             Multiply,

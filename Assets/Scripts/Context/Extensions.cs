@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using GameActors;
 using GameActors.Blocks;
@@ -19,6 +20,13 @@ namespace Context
             return new Color(r, g, b, 1);
         }
 
+        public static T GetRandom<T>(this IEnumerable<T> list)
+        {
+            var enumerable = list as T[] ?? list.ToArray();
+            var random = Random.Range(0, enumerable.Length);
+            return enumerable[random];
+        }
+
         public static float Speed(this SnakeController snakeController)
         {
             var context = ContextProvider.Context;
@@ -26,7 +34,7 @@ namespace Context
             var loadedDecaySpeed = context.GameSetup.LoadedSpeedDecay;
             var finalSpeed = baseSpeed - (snakeController.Blocks.Count * loadedDecaySpeed);
             var speedBlocks = snakeController.Blocks
-                .Where(b => b is SpeedBlockView)
+                .Where(b => b.BlockType == BlockType.SpeedBoost)
                 .Cast<SpeedBlockView>();
             
             //speed need to be in inverse proportion, because more speed = less time
@@ -44,6 +52,14 @@ namespace Context
                 name = name.Replace("Alpha", string.Empty);
 
             return name;
+        }
+
+        public static Vector3 FindFairPosition(params Transform[] transforms)
+        {
+            var center = new Vector3(0, 0, 0);
+            foreach (var t in transforms)
+                center += t.transform.position;
+            return center / transforms.Length;
         }
     }
 }

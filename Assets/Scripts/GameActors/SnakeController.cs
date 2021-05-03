@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Context;
-using DG.Tweening;
 using Game;
 using GameActors.Blocks;
 using GameActors.Blocks.Consumables;
 using TMPro;
-using UI;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -16,7 +14,7 @@ namespace GameActors
     public class SnakeController : MonoBehaviour
     {
         public UnityEvent OnDie = new UnityEvent();
-        public UnityEvent OnPick = new UnityEvent();
+        public UnityEvent<BlockType> OnPick = new UnityEvent<BlockType>();
         public UnityEvent OnKill = new UnityEvent();
         
         [SerializeField] private Transform _bodyContainer;
@@ -26,20 +24,18 @@ namespace GameActors
         private BlockView Head => _blocks.First();
         public List<BlockView> Blocks => _blocks;
         
-        private PlayerConfig _playerConfig;
-        private IContext _gameContext;
+        private PlayerModel _playerModel;
         private MoveType _lastMoveType;
         private Coroutine _updateRoutine;
         private bool _paused;
 
-        public void Initialize(PlayerConfig playerConfig)
+        public void Initialize(PlayerModel playerModel)
         {
-            _gameContext = ContextProvider.Context;
-            _playerConfig = playerConfig;
-            _name.text = playerConfig.Username;
-            _name.color = playerConfig.Color;
+            _playerModel = playerModel;
+            _name.text = playerModel.Username;
+            _name.color = playerModel.Color;
 
-            foreach (var block in playerConfig.Character.StartBlocks)
+            foreach (var block in playerModel.Character.StartBlocks)
                 AddBlock(block);
             
             Respawn();
@@ -112,28 +108,39 @@ namespace GameActors
                 BlockView currentBlock = blocks[i];
                 BlockView nextBlock = null;
                 if (i + 1 <= blocks.Count - 1)
+                {
                     nextBlock = blocks[i + 1];
+                    nextBlock.SetPreviousPart(currentBlock);
+                }
                 
                 currentBlock.SetNextPart(nextBlock);
             }
         }
         
-        private void CheckContact(IHittable element)
+        private void CheckContact(BlockView myBlock, IHittable element)
         {
-            if (element.Type == typeof(Wall))
+            if (element is Wall wall)
             {
-                if (CheckForDeath())
+                if (myBlock.IsHead)
+                {
                     OnDie.Invoke();
+                }
             }
-            else if (element.Type == typeof(ConsumableBlock))
+            else if (element is ConsumableBlock consumableBlock)
             {
-                var block = (ConsumableBlock) element;
+                OnPick.Invoke(consumableBlock.BlockType);
             }
-        }
-
-        private bool CheckForDeath()
-        {
-            return true;
+            else if (element is BlockView blockView)
+            {
+                if (myBlock.IsHead)
+                {
+                    OnDie.Invoke();
+                }
+                else
+                {
+                    OnKill.Invoke();
+                }
+            }
         }
     }
 }

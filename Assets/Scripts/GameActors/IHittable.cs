@@ -1,9 +1,7 @@
-﻿using System;
-
-namespace GameActors
+﻿namespace GameActors
 {
     public interface IHittable
     {
-        Type Type { get; }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Context;
+using Game;
 using UI;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,28 +10,28 @@ namespace Tutorial
 {
     public class PlayerInfoSelection : MonoBehaviour
     {
-        public UnityEvent<PlayerConfig> OnInfoFinished = new UnityEvent<PlayerConfig>();
+        public UnityEvent<PlayerModel> OnInfoFinished = new UnityEvent<PlayerModel>();
         
         [SerializeField] private InputField _userName;
         [SerializeField] private Button _finishConfiguration;
         [SerializeField] private Keyboard _keyboard;
         [SerializeField] private KeyDetector.KeyDetector _keyDetector;
         
-        private PlayerConfig _playerConfig;
+        private PlayerModel _playerModel;
 
         private void Awake()
         {
             _finishConfiguration.onClick.AddListener(
                 () =>
                 {
-                    _playerConfig.Username = _userName.text;
-                    OnInfoFinished.Invoke(_playerConfig);
+                    _playerModel.Username = _userName.text;
+                    OnInfoFinished.Invoke(_playerModel);
                 });
         }
 
-        public void Show(PlayerConfig playerConfig)
+        public void Show(PlayerModel playerModel)
         {
-            _playerConfig = playerConfig;
+            _playerModel = playerModel;
             _finishConfiguration.enabled = false;
             
             _keyboard.Initialize();
@@ -53,8 +54,8 @@ namespace Tutorial
 
             _keyboard.UpdateKeys();
 
-            _playerConfig.LeftKey = keys[0];
-            _playerConfig.RightKey = keys[1];
+            _playerModel.LeftKey = keys[0];
+            _playerModel.RightKey = keys[1];
             
             _finishConfiguration.enabled = true;
         }

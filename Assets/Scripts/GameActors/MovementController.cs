@@ -1,4 +1,5 @@
 ﻿using Context;
+using Game;
 using UI;
 using UnityEngine;
 
@@ -7,20 +8,22 @@ namespace GameActors
     public class MovementController : MonoBehaviour
     {
         private SnakeController _snakeController;
-        private PlayerConfig _playerConfig;
+        private PlayerModel _playerModel;
 
-        public void SetConfig(PlayerConfig playerConfig)
+        public int Id => _playerModel.Id;
+
+        public void SetConfig(PlayerModel playerModel)
         {
-            _playerConfig = playerConfig;
+            _playerModel = playerModel;
             _snakeController = GetComponent<SnakeController>();
-            _snakeController.Initialize(playerConfig);
+            _snakeController.Initialize(playerModel);
         }
 
         public void Update()
         {
-            if (Input.GetKeyDown(_playerConfig.RightKey))
+            if (Input.GetKeyDown(_playerModel.RightKey))
                 _snakeController.MoveRight();
-            else if (Input.GetKeyDown(_playerConfig.LeftKey))
+            else if (Input.GetKeyDown(_playerModel.LeftKey))
                 _snakeController.MoveLeft();
         }
     }

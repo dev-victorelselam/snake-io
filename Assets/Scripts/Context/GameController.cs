@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Game;
 using GameActors;
+using GameActors.Blocks;
+using GameActors.Blocks.Consumables;
 using UI;
 using UnityEngine;
 
@@ -9,19 +12,21 @@ namespace Context
 {
     public class MatchGroup
     {
-        public SnakeController Player;
-        public SnakeController Enemy;
-        
+        public MovementController Player { get; set; }
+        public IAController Enemy { get; set; }
+
+        public ConsumableBlock Block { get; set; }
     }
-    
-    public class GameController : MonoBehaviour
+
+    public partial class GameController : MonoBehaviour
     {
         [SerializeField] private Transform _gameSpace;
+        [SerializeField] private List<SpawnPoints> _spawnPoints;
         
         private GameCanvas _gameUI;
         private IContext _gameContext;
         
-        private List<SnakeElement> _allSnakes = new List<SnakeElement>();
+        private List<MatchGroup> _matchGroups = new List<MatchGroup>();
 
         public void StartController()
         {
@@ -30,52 +35,77 @@ namespace Context
         }
         
         public void StartGame()
-        {
-            
-        }
+        { }
         
         public void PauseGame()
-        {
-            
-        }
+        { }
 
         public void StopGame()
         {
             _gameContext.NavigationController.UpdateUI(GameState.PreGame);
         }
 
-        public void AddPlayer(PlayerConfig playerConfig)
+        public void AddPlayer(PlayerModel playerModel)
         {
-            SpawnPlayer(_gameContext.GameSetup.SnakePrefab, playerConfig);
-            SpawnEnemy(_gameContext.GameSetup.SnakePrefab, playerConfig);
+            var setup = _gameContext.GameSetup;
+            var spawnPoint = _spawnPoints.GetRandom();
+            var fairPosition = Extensions.FindFairPosition(spawnPoint.Player, spawnPoint.Enemy);
+                
+            var player = SpawnPlayer(setup.SnakePrefab, playerModel, spawnPoint.Player);
+            var enemy = SpawnEnemy(setup.SnakePrefab, playerModel, spawnPoint.Enemy);
+            var block = SpawnBlock(setup.ConsumableBlockPrefab, fairPosition);
+            
+            _matchGroups.Add(new MatchGroup
+            {
+                Player = player,
+                Enemy = enemy,
+                Block = block,
+            });
+        }
+    }
+    
+    public partial class GameController
+    {
+        private ConsumableBlock SpawnBlock(ConsumableBlock prefab, Vector3 fairPosition)
+        {
+            var blockType = Enum.GetValues(typeof(BlockType)).Cast<BlockType>().GetRandom();
+            var block = Instantiate(prefab, _gameSpace);
+            
+            block.transform.position = fairPosition;
+            block.Initialize(blockType);
+            
+            return block;
         }
 
-        private SnakeController SpawnPlayer(GameObject snakePrefab, PlayerConfig playerConfig)
+        private MovementController SpawnPlayer(GameObject snakePrefab, PlayerModel playerModel, Transform spawnPoint)
         {
-            var player = InstantiateSnake(snakePrefab);
-            player.gameObject
-                .AddComponent<MovementController>()
-                .SetConfig(playerConfig);
-            
-            _allSnakes.Add(new SnakeElement(player));
+            var player = InstantiateSnake(snakePrefab, spawnPoint)
+                .AddComponent<MovementController>();
+            player.SetConfig(playerModel);
 
             return player;
         }
 
-        private SnakeController SpawnEnemy(GameObject snakePrefab, PlayerConfig playerConfig)
+        private IAController SpawnEnemy(GameObject snakePrefab, PlayerModel playerModel, Transform spawnPoint)
         {
-            playerConfig.Character = ContextProvider.Context.GameSetup.Characters.First();
-            var enemy = InstantiateSnake(snakePrefab);
-            enemy.gameObject
-                .AddComponent<IAController>()
-                .SetConfig(playerConfig);
-            
-            _allSnakes.Add(new SnakeElement(enemy));
+            var enemy = InstantiateSnake(snakePrefab, spawnPoint).AddComponent<IAController>();
+            enemy.SetConfig(playerModel);
 
             return enemy;
         }
 
-        private SnakeController InstantiateSnake(GameObject snakePrefab) 
-            => Instantiate(snakePrefab, _gameSpace).GetComponent<SnakeController>();
+        private GameObject InstantiateSnake(GameObject snakePrefab, Transform spawnPoint)
+        {
+            var obj = Instantiate(snakePrefab, _gameSpace);
+            obj.transform.position = spawnPoint.position;
+            return obj;
+        }
+        
+        [Serializable]
+        class SpawnPoints
+        {
+            public Transform Player;
+            public Transform Enemy;
+        }
     }
 }

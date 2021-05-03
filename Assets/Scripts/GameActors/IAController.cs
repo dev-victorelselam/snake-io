@@ -1,4 +1,5 @@
-﻿using UI;
+﻿using Game;
+using UI;
 using UnityEngine;
 
 namespace GameActors
@@ -6,13 +7,13 @@ namespace GameActors
 
     public class IAController : MonoBehaviour
     {
-        private PlayerConfig _playerConfig;
+        private PlayerModel _playerModel;
         private SnakeController _snakeController;
 
-        public void SetConfig(PlayerConfig playerConfig)
+        public void SetConfig(PlayerModel playerModel)
         {
             _snakeController = GetComponent<SnakeController>();
-            _snakeController.Initialize(playerConfig);
+            _snakeController.Initialize(playerModel);
         }
 
         public void Update()

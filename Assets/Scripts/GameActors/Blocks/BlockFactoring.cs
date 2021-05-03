@@ -18,7 +18,9 @@ namespace GameActors.Blocks
                 return null;
             }
 
+            //found that unity don't handle polymorphism, so we have to specify types here
             var gameObj = Object.Instantiate(blockType.BlockPrefab, container);
+            gameObj.GetComponent<BlockView>().SetBlockType(type);
             switch (type)
             {
                 case BlockType.Common:
