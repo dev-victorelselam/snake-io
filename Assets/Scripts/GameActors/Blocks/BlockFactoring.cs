@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using Consumables;
 using Context;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace GameActors
 {
@@ -15,10 +18,23 @@ namespace GameActors
                 Debug.LogError($"Missing block of type {type}");
                 return null;
             }
-            
-            var obj = Object.Instantiate(blockType.BlockPrefab, container).GetComponent<BlockView>();
-            obj.BlockType = type;
-            return obj;
+
+            var gameObj = Object.Instantiate(blockType.BlockPrefab, container);
+            switch (type)
+            {
+                case BlockType.Common:
+                    return gameObj.GetComponent<BlockView>();
+                case BlockType.TimeTravel:
+                    return gameObj.GetComponent<BlockView>();
+                case BlockType.SpeedBoost:
+                    return gameObj.GetComponent<SpeedBlockView>();
+                case BlockType.BatteringRam:
+                    return gameObj.GetComponent<BlockView>();
+                case BlockType.Variant:
+                    return gameObj.GetComponent<VariantBlockView>();
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
         }
     }
 }

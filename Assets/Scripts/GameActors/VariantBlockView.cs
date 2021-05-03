@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Consumables
 {
-    public class VariantBlock : BlockView
+    public class VariantBlockView : BlockView
     {
         [SerializeField] private float _timeToChange;
         private BlockView _block;

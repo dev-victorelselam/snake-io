@@ -81,8 +81,8 @@ namespace GameActors
                 while (_paused)
                     yield return new WaitForSeconds(0.1f);
                     
-                yield return new WaitForSeconds(GameDelay.Get());
-                Head.Move(this.Speed(), _lastMoveType);
+                yield return new WaitForSeconds(this.Speed());
+                Head.Move(1.5f, _lastMoveType);
                 _lastMoveType = MoveType.Forward;
             }
         }

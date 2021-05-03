@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using GameActors;
 using UI;
 using UnityEngine;
@@ -62,6 +63,7 @@ namespace Context
 
         private SnakeController SpawnEnemy(GameObject snakePrefab, PlayerConfig playerConfig)
         {
+            playerConfig.Character = ContextProvider.Context.GameSetup.Characters.First();
             var enemy = InstantiateSnake(snakePrefab);
             enemy.gameObject
                 .AddComponent<IAController>()

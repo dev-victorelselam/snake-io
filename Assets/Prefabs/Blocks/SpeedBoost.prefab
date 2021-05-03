@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9369554ed6ee461baef03417835839a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BlockType: 0
+  OnContact:
+    m_PersistentCalls:
+      m_Calls: []
   _boostValue: 1
   _type: 0
 --- !u!1001 &8643185006955641857

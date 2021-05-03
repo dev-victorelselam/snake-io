@@ -21,12 +21,19 @@ namespace Context
         public static float Speed(this SnakeController snakeController)
         {
             var context = ContextProvider.Context;
-            var baseSpeed = context.GameSetup.SnakeBaseSpeed;
+            var baseSpeed = context.GameSetup.BaseSpeed;
             var loadedDecaySpeed = context.GameSetup.LoadedSpeedDecay;
             var finalSpeed = baseSpeed - (snakeController.Blocks.Count * loadedDecaySpeed);
-            var speedBlocks = snakeController.Blocks.Where(b => b is SpeedBlockView).Cast<SpeedBlockView>();
+            var speedBlocks = snakeController.Blocks
+                .Where(b => b is SpeedBlockView)
+                .Cast<SpeedBlockView>();
             
-            return speedBlocks.Aggregate(finalSpeed, (current, speedBlock) => speedBlock.Apply(current));
+            //speed need to be in inverse proportion, because more speed = less time
+            var result = finalSpeed;
+            foreach (var block in speedBlocks) 
+                result = block.Apply(result);
+            result = 1 / result;
+            return result;
         }
 
         public static string Name(this KeyCode keyCode)
@@ -36,24 +43,6 @@ namespace Context
                 name = name.Replace("Alpha", string.Empty);
 
             return name;
-        }
-    }
-
-    public static class StaticValues
-    {
-        public static float BlockSize = 1f;
-    }
-
-    public static class GameDelay
-    {
-        public static float Get()
-        {
-            var gameSpeed = ContextProvider.Context.GameSetup.GameSpeed;
-            
-            var normalized = gameSpeed / 5; //normalize gameSpeed 
-            var delay = 1 - normalized;
-            
-            return delay;
         }
     }
 }
