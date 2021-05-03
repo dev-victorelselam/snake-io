@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
-using GameActors;
+using GameActors.Blocks;
 using UnityEngine;
 
-namespace Consumables
+namespace GameActors
 {
     public class VariantBlockView : BlockView
     {

@@ -1,7 +1,7 @@
-﻿using GameActors;
+﻿using GameActors.Blocks;
 using UnityEngine;
 
-namespace Context
+namespace Game
 {
     //kind of memento pattern
     public class SnakeSnapshot

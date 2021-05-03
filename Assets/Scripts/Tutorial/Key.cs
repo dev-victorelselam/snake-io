@@ -3,7 +3,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace Tutorial
 {
     public class Key : MonoBehaviour
     {

@@ -1,4 +1,6 @@
-﻿namespace Context
+﻿using Tutorial;
+
+namespace Context
 {
     public interface IContext
     {

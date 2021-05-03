@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Context;
 
-namespace Context
+namespace Tutorial
 {
     public class Characters
     {

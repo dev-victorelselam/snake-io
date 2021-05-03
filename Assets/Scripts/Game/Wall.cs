@@ -2,7 +2,10 @@
 using GameActors;
 using UnityEngine;
 
-public class Wall : MonoBehaviour, IHittable
+namespace Game
 {
-    public Type Type => GetType();
+    public class Wall : MonoBehaviour, IHittable
+    {
+        public Type Type => GetType();
+    }
 }

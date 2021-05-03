@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using Context;
 using DG.Tweening;
+using UI;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace UI
+namespace Tutorial
 {
     public class CharacterSelection : MonoBehaviour
     {

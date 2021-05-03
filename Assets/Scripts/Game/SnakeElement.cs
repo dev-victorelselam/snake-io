@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using GameActors;
 
-namespace Context
+namespace Game
 {
     public class SnakeElement
     {

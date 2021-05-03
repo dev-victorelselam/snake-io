@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace GameActors
+namespace GameActors.Blocks.Consumables
 {
     public class ConsumableBlock : MonoBehaviour
     {

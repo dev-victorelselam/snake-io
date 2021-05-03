@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace GameActors
+namespace GameActors.Blocks
 {
     public class SpeedBlockView : BlockView
     {

@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace Context
+namespace Tutorial
 {
     public class AvailableKeys
     {

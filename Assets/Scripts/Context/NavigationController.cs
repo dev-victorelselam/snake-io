@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Linq;
 using DG.Tweening;
+using Game;
 using UI;
 using UnityEngine;
 using UnityEngine.Events;

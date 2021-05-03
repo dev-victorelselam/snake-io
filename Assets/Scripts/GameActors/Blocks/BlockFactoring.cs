@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq;
-using Consumables;
 using Context;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace GameActors
+namespace GameActors.Blocks
 {
     public static class BlockFactoring
     {

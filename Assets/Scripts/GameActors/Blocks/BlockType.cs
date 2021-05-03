@@ -1,4 +1,4 @@
-﻿namespace GameActors
+﻿namespace GameActors.Blocks
 {
     public enum BlockType
     {

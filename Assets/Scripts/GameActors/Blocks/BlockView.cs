@@ -1,9 +1,10 @@
 ﻿using System;
 using Context;
+using Game;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace GameActors
+namespace GameActors.Blocks
 {
     [RequireComponent(typeof(Rigidbody), typeof(Collider))]
     public class BlockView : MonoBehaviour, IHittable

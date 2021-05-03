@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace UI
+namespace Tutorial
 {
     public class CharacterCard : MonoBehaviour
     {

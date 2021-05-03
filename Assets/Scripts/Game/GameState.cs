@@ -1,4 +1,4 @@
-﻿namespace Context
+﻿namespace Game
 {
     public enum GameState
     {
