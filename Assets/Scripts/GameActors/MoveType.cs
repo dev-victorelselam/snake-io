@@ -2,6 +2,7 @@
 {
     public enum MoveType
     {
+        Forward,
         Right,
         Left
     }

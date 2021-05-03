@@ -6,8 +6,9 @@ namespace GameActors
 {
     public static class BlockFactoring
     {
-        public static BlockView CreateInstance(Transform container, BlockType type, BlockModel[] blocks)
+        public static BlockView CreateInstance(Transform container, BlockType type)
         {
+            var blocks = ContextProvider.Context.GameSetup.Blocks;
             var blockType = blocks.FirstOrDefault(b => b.BlockType == type);
             if (blockType == null)
             {

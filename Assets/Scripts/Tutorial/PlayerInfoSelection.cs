@@ -40,7 +40,7 @@ namespace Tutorial
         
         private void ConfirmButtonsDialog(List<KeyCode> keys)
         {
-            PopupUtility.Instance.ShowDialog($"Os botões escolhidos foram: {keys[0]} e {keys[1]}", 
+            PopupUtility.Instance.ShowDialog($"Os botões escolhidos foram: {keys[0].Name()} e {keys[1].Name()}", 
                 () => AssignKeys(keys), 
                 () => _keyDetector.StartListen());
         }

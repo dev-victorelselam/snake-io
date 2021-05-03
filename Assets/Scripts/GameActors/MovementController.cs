@@ -9,7 +9,7 @@ namespace GameActors
         private SnakeController _snakeController;
         private PlayerConfig _playerConfig;
 
-        public void SetPlayerConfig(PlayerConfig playerConfig)
+        public void SetConfig(PlayerConfig playerConfig)
         {
             _playerConfig = playerConfig;
             _snakeController = GetComponent<SnakeController>();

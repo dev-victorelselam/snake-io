@@ -13,16 +13,8 @@ namespace Context
     {
         public TransformSnapshot(BlockView transform)
         {
-            if (transform == null)
-            {
-                Position = Vector3.zero;
-                Rotation = Vector3.zero;
-            }
-            else
-            {
-                Position = transform.transform.position;
-                Rotation = transform.transform.eulerAngles;
-            }
+            Position = transform.transform.position;
+            Rotation = transform.transform.eulerAngles;
         }
         
         public TransformSnapshot(Transform transform)

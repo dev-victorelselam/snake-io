@@ -6,5 +6,6 @@
         TimeTravel,
         SpeedBoost,
         BatteringRam,
+        Variant,
     }
 }

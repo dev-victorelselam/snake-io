@@ -1,19 +1,23 @@
-﻿using UnityEngine;
+﻿using UI;
+using UnityEngine;
 
 namespace GameActors
 {
+
     public class IAController : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
+        private PlayerConfig _playerConfig;
+        private SnakeController _snakeController;
+
+        public void SetConfig(PlayerConfig playerConfig)
         {
-        
+            _snakeController = GetComponent<SnakeController>();
+            _snakeController.Initialize(playerConfig);
         }
 
-        // Update is called once per frame
-        void Update()
+        public void Update()
         {
-        
+            
         }
     }
 }

@@ -8,15 +8,8 @@ namespace Context
     [CreateAssetMenu(fileName = "Game Setup", menuName = "Snake/GameSetup")]
     public class GameSetup : ScriptableObject
     {
-        public GameObject SnakePrefab;
-        [Range(0, 10)] public int StartBlocks;
-        [Range(0, 100)] public float BaseSpeed;
-        [Range(0, 10)] public float LoadedSpeedDecay;
-
-        [Space(10)]
-        public BlockModel[] Blocks;
-
-        [Space(20)]
+        [Header("General Configs")]
+        [Range(0, 5)] public float GameSpeed;
         public CharacterSettings[] Characters;
         public KeyCode[] AvailableKeys = {
             KeyCode.Alpha0,
@@ -59,5 +52,12 @@ namespace Context
             KeyCode.N,
             KeyCode.M,
         };
+        
+        [Header("Snake Gameplay Configs")]
+        [Space(10)]
+        public GameObject SnakePrefab;
+        [Range(0, 10)] public float SnakeBaseSpeed;
+        [Range(0, 1)] public float LoadedSpeedDecay;
+        public BlockModel[] Blocks;
     }
 }

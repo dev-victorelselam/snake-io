@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46bd1090d8ba4ff1a82617754212c1fc, type: 3}
   m_Name: Character4
   m_EditorClassIdentifier: 
-  CharacterName: 4
-  Color: {r: 0, g: 1, b: 0.66267204, a: 1}
+  Image: {fileID: 0}
+  CharacterName: Bruter
   StartBlocks: 030000000300000003000000

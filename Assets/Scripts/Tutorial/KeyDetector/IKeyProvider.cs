@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Events;
+﻿using UnityEngine;
 
 namespace Tutorial.KeyDetector
 {
     public interface IKeyProvider
     {
-        UnityEvent<List<KeyCode>> OnComplete { get; }
-
-        void Enable();
+        bool GetKey(KeyCode keyCode);
+        bool GetKeyUp(KeyCode keyCode);
     }
 }

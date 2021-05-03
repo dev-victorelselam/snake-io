@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46bd1090d8ba4ff1a82617754212c1fc, type: 3}
   m_Name: Character1
   m_EditorClassIdentifier: 
-  CharacterName: 1
-  Color: {r: 1, g: 0, b: 0, a: 1}
+  Image: {fileID: 0}
+  CharacterName: Mutant
   StartBlocks: 010000000200000003000000

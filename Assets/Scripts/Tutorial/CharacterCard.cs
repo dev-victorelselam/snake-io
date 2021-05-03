@@ -11,15 +11,13 @@ namespace UI
         
         [SerializeField] private Image _image;
         [SerializeField] private Text _name;
-        [SerializeField] private Image _color;
         [Space(10)] 
         [SerializeField] private Button _selectButton;
         
         public void SetModel(CharacterSettings settings)
         {
+            _image.sprite = settings.Image;
             _name.text = settings.CharacterName;
-            _color.color = settings.Color;
-            
             _selectButton.onClick.AddListener(() => OnCharacterSelected.Invoke(settings));
         }
     }

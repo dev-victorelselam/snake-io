@@ -63,6 +63,6 @@ namespace Context
             enterScreen.Container.DOLocalMoveX(0, 0.3f).SetEase(Ease.OutBack);
         }
 
-        private IGameUI GetUIByState(GameState state) => _gameUis.FirstOrDefault(g => g.GameState == state);
+        public IGameUI GetUIByState(GameState state) => _gameUis.FirstOrDefault(g => g.GameState == state);
     }
 }

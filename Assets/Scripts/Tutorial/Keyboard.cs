@@ -39,7 +39,7 @@ namespace Tutorial
             
             for (var i = 0; i < _allKeysList.Count; i++)
             {
-                _allKeysList[i].KeyCode = allKeys[i];
+                _allKeysList[i].SetKey(allKeys[i]);
                 _allKeysList[i].Enable(availableKeys.Contains(allKeys[i]));
             }
         }

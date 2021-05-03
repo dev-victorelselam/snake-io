@@ -11,8 +11,8 @@ namespace Context
         private readonly List<KeyCode> _unavailableKeys;
         public AvailableKeys(List<KeyCode> availableKeys)
         {
-            _allKeys = availableKeys;
-            _availableKeys = availableKeys;
+            _allKeys = availableKeys.ToList();
+            _availableKeys = availableKeys.ToList();
             _unavailableKeys = new List<KeyCode>();
         }
 

@@ -6,46 +6,63 @@ using DG.Tweening;
 using TMPro;
 using UI;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace GameActors
 {
     public class SnakeController : MonoBehaviour
     {
+        public UnityEvent OnDie = new UnityEvent();
+        public UnityEvent OnPick = new UnityEvent();
+        public UnityEvent OnKill = new UnityEvent();
+        
         [SerializeField] private Transform _bodyContainer;
         [SerializeField] private TextMeshPro _name;
         
         private readonly List<BlockView> _blocks = new List<BlockView>();
-        private IContext _gameContext;
-        private MoveType? _lastMoveType;
-        private Coroutine _updateRoutine;
-
-        private bool _paused;
+        private BlockView Head => _blocks.First();
+        public List<BlockView> Blocks => _blocks;
         
-        private float Speed
-        {
-            get
-            {
-                var baseSpeed = _gameContext.GameSetup.BaseSpeed;
-                var loadedDecaySpeed = _gameContext.GameSetup.LoadedSpeedDecay;
-                var finalSpeed = baseSpeed - (_blocks.Count * loadedDecaySpeed);
-                var speedBlocks = _blocks.Where(b => b is SpeedBlockView).Cast<SpeedBlockView>();
-            
-                return speedBlocks.Aggregate(finalSpeed, (current, speedBlock) => speedBlock.Apply(current));
-            }
-        }
+        private PlayerConfig _playerConfig;
+        private IContext _gameContext;
+        private MoveType _lastMoveType;
+        private Coroutine _updateRoutine;
+        private bool _paused;
 
         public void Initialize(PlayerConfig playerConfig)
         {
             _gameContext = ContextProvider.Context;
+            _playerConfig = playerConfig;
             _name.text = playerConfig.Username;
-            _name.color = playerConfig.Character.Color;
+            _name.color = playerConfig.Color;
 
             foreach (var block in playerConfig.Character.StartBlocks)
                 AddBlock(block);
+            
+            Respawn();
+        }
+
+        public void Respawn()
+        {
+            if (_updateRoutine != null)
+            {
+                StopCoroutine(_updateRoutine);
+                _updateRoutine = null;
+            }
 
             for (var i = 0; i < _blocks.Count; i++)
-                _blocks[i].transform.DOLocalMoveY(-(StaticValues.BlockSize * i), 0);
-            
+            {
+                var newPosition = Vector3.zero;
+                if (i - 1 >= 0)
+                {
+                    var oldBlock = _blocks[i - 1];
+                    newPosition = oldBlock.transform.position;
+                    newPosition.y -= oldBlock.Collider.bounds.size.y / 2;
+                }
+
+                _blocks[i].transform.position = newPosition;
+            }
+                
             _updateRoutine = StartCoroutine(UpdateCoroutine());
         }
 
@@ -62,11 +79,11 @@ namespace GameActors
             while (true)
             {
                 while (_paused)
-                    yield return new WaitForSeconds(StaticValues.UpdateTime);
+                    yield return new WaitForSeconds(0.1f);
                     
-                yield return new WaitForSeconds(StaticValues.UpdateTime);
-                _blocks.First().Move(Speed, StaticValues.UpdateTime, _lastMoveType);
-                _lastMoveType = null;
+                yield return new WaitForSeconds(GameDelay.Get());
+                Head.Move(this.Speed(), _lastMoveType);
+                _lastMoveType = MoveType.Forward;
             }
         }
 
@@ -74,24 +91,18 @@ namespace GameActors
         {
             _paused = true;
             
-            var obj = BlockFactoring.CreateInstance(_bodyContainer, type, _gameContext.GameSetup.Blocks);
-            obj.Initialize(this);
-            var firstBlock = _blocks.FirstOrDefault();
-            if (firstBlock != null)
-            {
-                obj.transform.position = firstBlock.transform.position;
-                obj.transform.eulerAngles = firstBlock.transform.eulerAngles;
-            }
-
+            var obj = BlockFactoring.CreateInstance(_bodyContainer, type);
             obj.transform.SetSiblingIndex(0);
+            obj.OnContact.AddListener(CheckContact);
             _blocks.Insert(0, obj);
+            _name.transform.SetParent(obj.transform);
 
             IterateBlocks(_blocks);
 
             _paused = false;
         }
 
-        private void IterateBlocks(List<BlockView> blocks)
+        private void IterateBlocks(IReadOnlyList<BlockView> blocks)
         {
             for (var i = 0; i < blocks.Count; i++)
             {
@@ -102,6 +113,24 @@ namespace GameActors
                 
                 currentBlock.SetNextPart(nextBlock);
             }
+        }
+        
+        private void CheckContact(IHittable element)
+        {
+            if (element.Type == typeof(Wall))
+            {
+                if (CheckForDeath())
+                    OnDie.Invoke();
+            }
+            else if (element.Type == typeof(ConsumableBlock))
+            {
+                var block = (ConsumableBlock) element;
+            }
+        }
+
+        private bool CheckForDeath()
+        {
+            return true;
         }
     }
 }
