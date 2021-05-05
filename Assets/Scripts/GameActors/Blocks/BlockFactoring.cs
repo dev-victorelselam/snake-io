@@ -26,13 +26,11 @@ namespace GameActors.Blocks
                 case BlockType.Common:
                     return gameObj.GetComponent<BlockView>();
                 case BlockType.TimeTravel:
-                    return gameObj.GetComponent<BlockView>();
+                    return gameObj.GetComponent<TimeTravelBlockView>();
                 case BlockType.SpeedBoost:
                     return gameObj.GetComponent<SpeedBlockView>();
                 case BlockType.BatteringRam:
                     return gameObj.GetComponent<BlockView>();
-                case BlockType.Variant:
-                    return gameObj.GetComponent<VariantBlockView>();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }

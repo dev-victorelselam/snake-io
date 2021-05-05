@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Context;
@@ -11,16 +12,32 @@ using UnityEngine.Events;
 
 namespace GameActors
 {
-    public class SnakeController : MonoBehaviour
+    public interface ISpeedable
     {
-        public UnityEvent OnDie = new UnityEvent();
-        public UnityEvent<BlockType> OnPick = new UnityEvent<BlockType>();
-        public UnityEvent OnKill = new UnityEvent();
-        
+        int Loads { get; }
+        List<float> SpeedBlocks { get; }
+    }
+    
+    public class SnakeController : MonoBehaviour, ISpeedable
+    {
+        public UnityEvent<SnakeController> OnDie = new UnityEvent<SnakeController>();
+        public UnityEvent<SnakeController, BlockType> OnPick = new UnityEvent<SnakeController, BlockType>();
+        public UnityEvent<SnakeController> OnKill = new UnityEvent<SnakeController>();
+
+        #region Interface
+        public int Loads => Blocks.Count;
+        public List<float> SpeedBlocks => Blocks
+            .Where(b => b.BlockType == BlockType.SpeedBoost)
+            .Cast<SpeedBlockView>().Select(s => s.SpeedValue)
+            .ToList();
+        #endregion
+
+        public Transform BodyContainer => _bodyContainer;
         [SerializeField] private Transform _bodyContainer;
         [SerializeField] private TextMeshPro _name;
         
         private readonly List<BlockView> _blocks = new List<BlockView>();
+        public int Id => _playerModel.Id;
         private BlockView Head => _blocks.First();
         public List<BlockView> Blocks => _blocks;
         
@@ -29,20 +46,24 @@ namespace GameActors
         private Coroutine _updateRoutine;
         private bool _paused;
 
-        public void Initialize(PlayerModel playerModel)
+        public void Initialize(PlayerModel playerModel, string snakeName)
         {
             _playerModel = playerModel;
-            _name.text = playerModel.Username;
+            _name.text = snakeName;
             _name.color = playerModel.Color;
 
             foreach (var block in playerModel.Character.StartBlocks)
                 AddBlock(block);
             
-            Respawn();
+            Respawn(transform);
         }
 
-        public void Respawn()
+        public void Pause(bool pause) => _paused = pause;
+
+        public void Respawn(Transform position)
         {
+            transform.position = position.position;
+            
             if (_updateRoutine != null)
             {
                 StopCoroutine(_updateRoutine);
@@ -52,17 +73,12 @@ namespace GameActors
             for (var i = 0; i < _blocks.Count; i++)
             {
                 var newPosition = Vector3.zero;
-                if (i - 1 >= 0)
-                {
-                    var oldBlock = _blocks[i - 1];
-                    newPosition = oldBlock.transform.position;
-                    newPosition.y -= oldBlock.Collider.bounds.size.y / 2;
-                }
-
-                _blocks[i].transform.position = newPosition;
+                newPosition.y -= 1.1f * i;
+                _blocks[i].transform.localPosition = newPosition;
             }
                 
             _updateRoutine = StartCoroutine(UpdateCoroutine());
+            Pause(false);
         }
 
         public void MoveRight() => _lastMoveType = MoveType.Right;
@@ -80,25 +96,30 @@ namespace GameActors
                 while (_paused)
                     yield return new WaitForSeconds(0.1f);
                     
-                yield return new WaitForSeconds(this.Speed());
-                Head.Move(1.5f, _lastMoveType);
+                yield return new WaitForSeconds(this.Speed()); 
+                Head.Move(1.1f, _lastMoveType);
                 _lastMoveType = MoveType.Forward;
             }
         }
 
-        public void AddBlock(BlockType type)
+        private BlockView AddBlock(BlockType type)
         {
-            _paused = true;
-            
             var obj = BlockFactoring.CreateInstance(_bodyContainer, type);
+            AddBlock(obj);
+            return obj;
+        }
+        
+        public void AddBlock(BlockView obj)
+        {
             obj.transform.SetSiblingIndex(0);
             obj.OnContact.AddListener(CheckContact);
             _blocks.Insert(0, obj);
+            
             _name.transform.SetParent(obj.transform);
+            _name.transform.localPosition = Vector3.up * 2;
+            _name.transform.localEulerAngles = Vector3.zero;
 
             IterateBlocks(_blocks);
-
-            _paused = false;
         }
 
         private void IterateBlocks(IReadOnlyList<BlockView> blocks)
@@ -116,30 +137,51 @@ namespace GameActors
                 currentBlock.SetNextPart(nextBlock);
             }
         }
+
+        public void ApplySnapshot(SnakeSnapshot snapshot)
+        {
+            _blocks.ForEach(b => Destroy(b.gameObject));
+            _blocks.Clear();
+
+            foreach (var blockSnapshot in snapshot.BlocksSnapshot)
+            {
+                var block = AddBlock(blockSnapshot.BlockType);
+                block.transform.localPosition = blockSnapshot.Position;
+                block.transform.eulerAngles = blockSnapshot.Rotation;
+            }
+        }
         
         private void CheckContact(BlockView myBlock, IHittable element)
         {
-            if (element is Wall wall)
+            if (_paused)
+                return;
+
+            switch (element)
             {
-                if (myBlock.IsHead)
-                {
-                    OnDie.Invoke();
-                }
-            }
-            else if (element is ConsumableBlock consumableBlock)
-            {
-                OnPick.Invoke(consumableBlock.BlockType);
-            }
-            else if (element is BlockView blockView)
-            {
-                if (myBlock.IsHead)
-                {
-                    OnDie.Invoke();
-                }
-                else
-                {
-                    OnKill.Invoke();
-                }
+                case Wall _:
+                    if (myBlock.IsHead) //avoid death in spawn where blocks are in vertical 
+                    {
+                        Pause(true);
+                        OnDie.Invoke(this);
+                    }
+                    break;
+                
+                case ConsumableBlock consumableBlock:
+                    Pause(true);
+                    OnPick.Invoke(this, consumableBlock.BlockType);
+                    break;
+                
+                case BlockView _ :
+                    if (myBlock.IsHead)
+                    {
+                        Pause(true);
+                        OnDie.Invoke(this);
+                    }
+                    else
+                    {
+                        OnKill.Invoke(this);
+                    }
+                    break;
             }
         }
     }

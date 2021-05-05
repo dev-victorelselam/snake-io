@@ -31,7 +31,7 @@ namespace Context
                     _gameController.StopGame();
                     break;
                 case GameState.Tutorial:
-                    _gameController.PauseGame();
+                    _gameController.PauseGame(true);
                     break;
                 case GameState.Game:
                     _gameController.StartGame();

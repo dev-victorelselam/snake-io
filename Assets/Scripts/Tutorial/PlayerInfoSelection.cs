@@ -26,6 +26,7 @@ namespace Tutorial
                 {
                     _playerModel.Username = _userName.text;
                     OnInfoFinished.Invoke(_playerModel);
+                    _playerModel = null;
                 });
         }
 

@@ -21,9 +21,8 @@ namespace _Tests
         private readonly List<AssertPrefab> _asserts = new List<AssertPrefab>();
         protected IContext Context;
 
-        protected void Setup(string testName, NavigationController navigationController, GameController gameController, PopupUtility popupUtility, GameSetup gameSetup)
+        protected void Setup(string testName)
         {
-            Context = new TestContext(navigationController, gameController, popupUtility, gameSetup);
             _testName.text = testName;
         
             if (_asserts.Any())

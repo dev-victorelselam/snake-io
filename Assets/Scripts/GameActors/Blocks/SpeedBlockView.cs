@@ -5,29 +5,7 @@ namespace GameActors.Blocks
 {
     public class SpeedBlockView : BlockView
     {
-        private enum SpeedModifierType
-        {
-            Sum,
-            Multiply,
-            Power
-        }
-        
+        public float SpeedValue => _boostValue;
         [SerializeField] [Range(0, 20)] float _boostValue;
-        [SerializeField] private SpeedModifierType _type;
-
-        public float Apply(float speed)
-        {
-            switch (_type)
-            {
-                case SpeedModifierType.Sum:
-                    return speed + _boostValue;
-                case SpeedModifierType.Multiply:
-                    return speed * _boostValue;
-                case SpeedModifierType.Power:
-                    return Mathf.Pow(speed, _boostValue);
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        } 
     }
 }

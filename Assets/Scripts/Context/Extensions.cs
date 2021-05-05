@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Game;
 using GameActors;
 using GameActors.Blocks;
 using UnityEngine;
@@ -27,22 +28,15 @@ namespace Context
             return enumerable[random];
         }
 
-        public static float Speed(this SnakeController snakeController)
+        public static float Speed(this ISpeedable speedable)
         {
             var context = ContextProvider.Context;
             var baseSpeed = context.GameSetup.BaseSpeed;
             var loadedDecaySpeed = context.GameSetup.LoadedSpeedDecay;
-            var finalSpeed = baseSpeed - (snakeController.Blocks.Count * loadedDecaySpeed);
-            var speedBlocks = snakeController.Blocks
-                .Where(b => b.BlockType == BlockType.SpeedBoost)
-                .Cast<SpeedBlockView>();
             
             //speed need to be in inverse proportion, because more speed = less time
-            var result = finalSpeed;
-            foreach (var block in speedBlocks) 
-                result = block.Apply(result);
-            result = 1 / result;
-            return result;
+            //so x = 1 / y
+            return 1 / (baseSpeed - (speedable.Loads * loadedDecaySpeed) + speedable.SpeedBlocks.Sum());
         }
 
         public static string Name(this KeyCode keyCode)
@@ -54,12 +48,18 @@ namespace Context
             return name;
         }
 
-        public static Vector3 FindFairPosition(params Transform[] transforms)
+        public static Vector3 FindFairPosition(params Vector3[] positions)
         {
+            //usually the best way to find a fair position is on center of all positions
             var center = new Vector3(0, 0, 0);
-            foreach (var t in transforms)
-                center += t.transform.position;
-            return center / transforms.Length;
+            foreach (var t in positions)
+                center += t;
+            return center / positions.Length;
+        }
+
+        public static SnakeSnapshot GetSnapshot(this SnakeController snakeController)
+        {
+            return new SnakeSnapshot(snakeController.Blocks);
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using GameActors.Blocks.Consumables;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Context
 {
@@ -57,8 +59,10 @@ namespace Context
         [Space(10)]
         public GameObject SnakePrefab;
         public ConsumableBlock ConsumableBlockPrefab;
-        [Range(0, 10)] public float BaseSpeed;
+        public Text PlayerScorePrefab;
+        [Range(5, 100)] public float BaseSpeed;
         [Range(0, 1)] public float LoadedSpeedDecay;
+        [Range(0, 10)] public int BlockScore;
         public BlockModel[] Blocks;
     }
 }

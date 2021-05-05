@@ -5,9 +5,10 @@ using UnityEngine.Events;
 
 namespace GameActors.Blocks
 {
-    [RequireComponent(typeof(Rigidbody), typeof(Collider))]
+    [RequireComponent(typeof(Rigidbody))]
     public class BlockView : MonoBehaviour, IHittable
     {
+        private const int TimeToEnableCollision = 1;
         public UnityEvent<BlockView, IHittable> OnContact = new UnityEvent<BlockView, IHittable>();
         
         public BlockType BlockType { get; private set; }
@@ -25,21 +26,24 @@ namespace GameActors.Blocks
 
         public void Move(float speed, MoveType moveType)
         {
-            if (!IsTail)
-                _next.Move(new TransformSnapshot(this));
-            
+            var transformSnapshot = new TransformSnapshot(transform);
             MoveDirection(moveType);
-            var end = transform.position + (transform.up.normalized * speed);
-            transform.position = end;
+            var end = transform.localPosition + (transform.up.normalized * speed);
+            transform.localPosition = end;
+            
+            if (!IsTail)
+                _next.Move(transformSnapshot);
         }
         
         public void Move(TransformSnapshot transformSnapshot)
         {
-            if (!IsTail)
-                _next.Move(new TransformSnapshot(this));
+            var newTransformSnapshot = new TransformSnapshot(transform);
+
+            transform.localPosition = transformSnapshot.Position;
+            transform.localEulerAngles = transformSnapshot.Rotation;
             
-            transform.position = transformSnapshot.Position;
-            transform.eulerAngles = transformSnapshot.Rotation;
+            if (!IsTail)
+                _next.Move(newTransformSnapshot);
         }
 
         public void MoveDirection(MoveType moveType)
@@ -49,10 +53,11 @@ namespace GameActors.Blocks
                 case MoveType.Forward:
                     break;
                 case MoveType.Right:
+                    transform.
                     transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z - 90);
                     break;
                 case MoveType.Left:
-                    transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z + 90);
+                    transform.localEulerAngles = new Vector3(0, 0, transform.eulerAngles.z + 90);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(moveType), moveType, null);
@@ -61,10 +66,22 @@ namespace GameActors.Blocks
 
         public void OnTriggerEnter(Collider other)
         {
+            if (_next)
+            {
+                if (other.gameObject == _next.gameObject)
+                    return;
+            }
+
+            if (_previous)
+            {
+                if (other.gameObject == _previous.gameObject)
+                    return;
+            }
+
             var hittable = other.gameObject.GetComponent<IHittable>();
             if (hittable == null)
                 return;
-            
+
             OnContact.Invoke(this, hittable);
         }
 

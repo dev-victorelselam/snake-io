@@ -50,7 +50,6 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Game\SnakeElement.cs" />
      <Compile Include="Assets\Scripts\Context\CharacterSettings.cs" />
      <Compile Include="Assets\Scripts\Context\PopupUtility.cs" />
      <Compile Include="Assets\Scripts\Context\IContext.cs" />
@@ -59,7 +58,6 @@
      <Compile Include="Assets\Scripts\UI\MainButton.cs" />
      <Compile Include="Assets\Scripts\GameActors\IAController.cs" />
      <Compile Include="Assets\Scripts\Context\GameContext.cs" />
-     <Compile Include="Assets\Scripts\GameActors\VariantBlockView.cs" />
      <Compile Include="Assets\Scripts\Tutorial\CharacterCard.cs" />
      <Compile Include="Assets\Scripts\Context\BlockModel.cs" />
      <Compile Include="Assets\Scripts\GameActors\Blocks\BlockFactoring.cs" />
@@ -101,6 +99,10 @@
      <Compile Include="Assets\Scripts\Context\ContextProvider.cs" />
      <Compile Include="Assets\Scripts\Tutorial\KeyDetector\KeyProviderFactoring.cs" />
      <Compile Include="Assets\Scripts\Context\NavigationController.cs" />
+     <Compile Include="Assets\Scripts\Context\MatchGroup.cs" />
+     <Compile Include="Assets\Scripts\Context\MementoSnakeTimeTravel.cs" />
+     <Compile Include="Assets\_Tests\Speed\SpeedTest.cs" />
+     <Compile Include="Assets\Scripts\GameActors\Blocks\TimeTravelBlockView.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
@@ -151,6 +153,54 @@
  </Reference>
  <Reference Include="UnityEditor.UI">
  <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.2D.Animation.Runtime">
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.2D.Animation.Runtime.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.2D.PixelPerfect.Editor">
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.2D.PixelPerfect.Editor.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.2D.SpriteShape.Editor">
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.2D.SpriteShape.Editor.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.2D.Path.Editor">
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.2D.Path.Editor.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.2D.Animation.Triangle.Runtime">
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.2D.Animation.Triangle.Runtime.dll</HintPath>
+ </Reference>
+ <Reference Include="PsdPlugin">
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/PsdPlugin.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.Mathematics">
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.Mathematics.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.2D.Psdimporter.Editor">
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.2D.Psdimporter.Editor.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.InternalAPIEngineBridge.001">
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.001.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.2D.Common.Runtime">
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.2D.Common.Runtime.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.2D.SpriteShape.Runtime">
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.2D.SpriteShape.Runtime.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.2D.PixelPerfect">
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.2D.PixelPerfect.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.2D.Animation.Editor">
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.2D.Animation.Editor.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.Mathematics.Editor">
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.Mathematics.Editor.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.2D.Common.Editor">
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.2D.Common.Editor.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.InternalAPIEditorBridge.001">
+ <HintPath>F:/Victor/Documents/PersonalProjects/snake-test/Library/ScriptAssemblies/Unity.InternalAPIEditorBridge.001.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.1.16f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>

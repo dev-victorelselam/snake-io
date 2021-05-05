@@ -1,6 +1,4 @@
-﻿using Context;
-using Game;
-using UI;
+﻿using Game;
 using UnityEngine;
 
 namespace GameActors
@@ -9,14 +7,15 @@ namespace GameActors
     {
         private SnakeController _snakeController;
         private PlayerModel _playerModel;
-
-        public int Id => _playerModel.Id;
+        
+        public SnakeController SnakeController => _snakeController;
 
         public void SetConfig(PlayerModel playerModel)
         {
+            gameObject.name = $"PlayerSnake: {playerModel.Username}";
             _playerModel = playerModel;
             _snakeController = GetComponent<SnakeController>();
-            _snakeController.Initialize(playerModel);
+            _snakeController.Initialize(playerModel, playerModel.Username);
         }
 
         public void Update()

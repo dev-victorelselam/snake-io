@@ -15,7 +15,8 @@ namespace _Tests.KeyDetector
     
         public async void Awake()
         {
-            Setup("[HintTest]", _navigationController, _gameController, _popupUtility, GameSetup);
+            Context = new TestContext(_navigationController, _gameController, _popupUtility, GameSetup);
+            Setup("[HintTest]");
 
             var keyDetector = gameObject.AddComponent<Tutorial.KeyDetector.KeyDetector>();
             keyDetector.OnComplete.AddListener(KeysDetected);

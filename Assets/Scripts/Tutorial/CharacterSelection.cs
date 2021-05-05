@@ -35,15 +35,16 @@ namespace Tutorial
         {
             //optionally, we could destroy all cards and rebuild.
             //if we had a feature of creating new characters in runtime for example
-            if (!_cards.IsNullOrEmpty())
-                return;
-            foreach (var characterSetting in characterSettings)
+            if (_cards.IsNullOrEmpty())
             {
-                var obj = Instantiate(_characterCardPrefab, _cardsContainer.transform);
-                _cards.Add(obj);
+                foreach (var characterSetting in characterSettings)
+                {
+                    var obj = Instantiate(_characterCardPrefab, _cardsContainer.transform);
+                    _cards.Add(obj);
                 
-                obj.SetModel(characterSetting);
-                obj.OnCharacterSelected.AddListener(CharacterSelected);
+                    obj.SetModel(characterSetting);
+                    obj.OnCharacterSelected.AddListener(CharacterSelected);
+                }
             }
 
             _playerModel = playerModel;
@@ -53,6 +54,7 @@ namespace Tutorial
         {
             _playerModel.Character = character;
             OnCharacterSelected.Invoke(_playerModel);
+            _playerModel = null;
         }
 
         private void NextCard()

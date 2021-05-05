@@ -15,8 +15,7 @@ MonoBehaviour:
   OnContact:
     m_PersistentCalls:
       m_Calls: []
-  _boostValue: 1
-  _type: 0
+  _boostValue: 2
 --- !u!1001 &8643185006955641857
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -78,6 +77,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: f9f5c31571a6bac49b853bedb5a406d8, type: 2}
     m_RemovedComponents:
     - {fileID: 4829901689261891749, guid: 96d13a065c3846d48bb87a8c31c05580, type: 3}
+    - {fileID: 1085072545858872885, guid: 96d13a065c3846d48bb87a8c31c05580, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 96d13a065c3846d48bb87a8c31c05580, type: 3}
 --- !u!1 &3779438105981840629 stripped
 GameObject:

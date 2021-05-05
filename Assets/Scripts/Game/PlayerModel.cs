@@ -1,5 +1,6 @@
 ﻿using Context;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Game
 {
@@ -15,6 +16,8 @@ namespace Game
     
     public class PlayerModel
     {
+        public readonly UnityEvent OnUpdate = new UnityEvent();
+        
         internal PlayerModel(int id, Color color)
         {
             Color = color;
@@ -23,13 +26,25 @@ namespace Game
         
         public Color Color { get; }
         public int Id { get; }
+        public string Username { get; set; }
         
         public CharacterSettings Character { get; set; }
-
         public KeyCode LeftKey { get; set; }
         public KeyCode RightKey { get; set; }
+        
 
-        public string Username { get; set; }
-        public int Score { get; set; }
+        //observer pattern for score
+        private int _score;
+        public int Score
+        {
+            get => _score;
+            set
+            {
+                _score = value;
+                OnUpdate.Invoke();
+            }
+        }
+
+        public string GetScore() => $"{Username}: {_score}";
     }
 }

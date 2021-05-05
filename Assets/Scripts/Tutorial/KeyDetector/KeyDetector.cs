@@ -34,8 +34,9 @@ namespace Tutorial.KeyDetector
         {
             if (!_enabled)
                 return;
-            
-            foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
+
+            var keys = _availableKeys.Available;
+            foreach (KeyCode keyCode in keys)
             {
                 if (_keyProvider.GetKey(keyCode))
                 {

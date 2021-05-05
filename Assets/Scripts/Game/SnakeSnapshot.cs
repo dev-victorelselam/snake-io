@@ -1,4 +1,6 @@
-﻿using GameActors.Blocks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using GameActors.Blocks;
 using UnityEngine;
 
 namespace Game
@@ -6,23 +8,38 @@ namespace Game
     //kind of memento pattern
     public class SnakeSnapshot
     {
-        public TransformSnapshot[] BlocksSnapshot;
+        public SnakeSnapshot(List<BlockView> blocks)
+        {
+            BlocksSnapshot = blocks.Select((view => new BlockSnapshot(view))).ToArray();
+        }
+        
+        public BlockSnapshot[] BlocksSnapshot { get; }
+    }
+
+    public class BlockSnapshot
+    {
+        public BlockSnapshot(BlockView blockView)
+        {
+            Position = blockView.transform.localPosition;
+            Rotation = blockView.transform.localEulerAngles;
+
+            BlockType = blockView.BlockType;
+        }
+        
+        public Vector3 Position { get; }
+        public Vector3 Rotation { get; }
+        
+        public BlockType BlockType { get; }
     }
 
     public class TransformSnapshot
     {
-        public TransformSnapshot(BlockView transform)
-        {
-            Position = transform.transform.position;
-            Rotation = transform.transform.eulerAngles;
-        }
-        
         public TransformSnapshot(Transform transform)
         {
-            Position = transform.position;
-            Rotation = transform.eulerAngles;
+            Position = transform.localPosition;
+            Rotation = transform.localEulerAngles;
         }
-        
+
         public Vector3 Position;
         public Vector3 Rotation;
     }
