@@ -59,7 +59,7 @@ namespace Context
 
         public static SnakeSnapshot GetSnapshot(this SnakeController snakeController)
         {
-            return new SnakeSnapshot(snakeController.Blocks);
+            return new SnakeSnapshot(snakeController);
         }
     }
 }

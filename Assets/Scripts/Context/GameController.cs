@@ -89,6 +89,7 @@ namespace Context
             var block = SpawnBlock(_gameContext.GameSetup.ConsumableBlockPrefab, fairPosition);
 
             group.Block = block;
+            group.PauseGroup(false);
         }
         
         private void Kill(SnakeController snake)
@@ -101,6 +102,9 @@ namespace Context
 
         private async void Die(SnakeController snake)
         {
+            var group = MatchGroupById(snake.Id);
+            group.PauseGroup(true);
+            
             var blocks = snake.Blocks.ToList();
             blocks.Reverse(); //get from older to newer
             var timeTravelBlock = blocks.FirstOrDefault(b => b.BlockType == BlockType.TimeTravel);
@@ -108,10 +112,11 @@ namespace Context
             {
                 await _gameUI.ActivatePowerUp(BlockType.TimeTravel);
                 Rewind(t.Retrieve());
+                
+                group.PauseGroup(false);
                 return;
             }
-            
-            var group = MatchGroupById(snake.Id);
+
             if (snake == group.Player.SnakeController) //when die, remove score
                 group.PlayerModel.Score -= 1;
             
@@ -129,19 +134,25 @@ namespace Context
         private void Pick(SnakeController snake, BlockType blockType)
         {
             var group = MatchGroupById(snake.Id);
+            group.PauseGroup(true);
 
-            var block = BlockFactoring.CreateInstance(snake.BodyContainer, blockType);
-            if (block is TimeTravelBlockView timeTravelBlock)
-            {
-                var allSnakes = _matchGroups.SelectMany(mg => mg.SnakeControllers);
-                timeTravelBlock.AddSnapshot(allSnakes);
-            }
+            var block = BlockFactoring.CreateInstance(snake.transform, blockType);
+            block.transform.localPosition = new Vector3(3000, 0, 0); //throw away to not appear in screen
+            
+            if (blockType == BlockType.TimeTravel)
+                CreateSnapShot((TimeTravelBlockView) block);
                 
             snake.AddBlock(block);
             if (snake == group.Player.SnakeController) //when pick a block, add score
                 group.PlayerModel.Score += _gameContext.GameSetup.BlockScore;
             
             RespawnGroup(group);
+        }
+
+        private void CreateSnapShot(TimeTravelBlockView blockView)
+        {
+            var allSnakes = _matchGroups.SelectMany(mg => mg.SnakeControllers);
+            blockView.AddSnapshot(allSnakes);
         }
 
         private MatchGroup MatchGroupById(int id) => _matchGroups.First(mg => mg.Id == id);

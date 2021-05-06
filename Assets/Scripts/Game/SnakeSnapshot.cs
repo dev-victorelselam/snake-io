@@ -1,19 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using GameActors;
 using GameActors.Blocks;
 using UnityEngine;
 
 namespace Game
 {
-    //kind of memento pattern
     public class SnakeSnapshot
     {
-        public SnakeSnapshot(List<BlockView> blocks)
+        public SnakeSnapshot(SnakeController snakeController)
         {
-            BlocksSnapshot = blocks.Select((view => new BlockSnapshot(view))).ToArray();
+            BlocksSnapshot = snakeController.Blocks.Select(view => new BlockSnapshot(view)).Reverse().ToArray();
+            TransformSnapshot = new TransformSnapshot(snakeController.transform);
         }
         
         public BlockSnapshot[] BlocksSnapshot { get; }
+        public TransformSnapshot TransformSnapshot { get; }
     }
 
     public class BlockSnapshot

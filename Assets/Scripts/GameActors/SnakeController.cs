@@ -63,6 +63,7 @@ namespace GameActors
         public void Respawn(Transform position)
         {
             transform.position = position.position;
+            transform.eulerAngles = position.eulerAngles;
             
             if (_updateRoutine != null)
             {
@@ -72,11 +73,12 @@ namespace GameActors
 
             for (var i = 0; i < _blocks.Count; i++)
             {
-                var newPosition = Vector3.zero;
-                newPosition.y -= 1.1f * i;
+                var newPosition = -transform.up * 1.1f * i;
                 _blocks[i].transform.localPosition = newPosition;
+                _blocks[i].transform.localEulerAngles = Vector3.zero;
             }
                 
+            SetNameParent(Head.transform);
             _updateRoutine = StartCoroutine(UpdateCoroutine());
             Pause(false);
         }
@@ -104,7 +106,7 @@ namespace GameActors
 
         private BlockView AddBlock(BlockType type)
         {
-            var obj = BlockFactoring.CreateInstance(_bodyContainer, type);
+            var obj = BlockFactoring.CreateInstance(transform, type);
             AddBlock(obj);
             return obj;
         }
@@ -114,12 +116,15 @@ namespace GameActors
             obj.transform.SetSiblingIndex(0);
             obj.OnContact.AddListener(CheckContact);
             _blocks.Insert(0, obj);
-            
-            _name.transform.SetParent(obj.transform);
-            _name.transform.localPosition = Vector3.up * 2;
-            _name.transform.localEulerAngles = Vector3.zero;
 
             IterateBlocks(_blocks);
+        }
+
+        private void SetNameParent(Transform parent)
+        {
+            _name.transform.SetParent(parent);
+            _name.transform.localPosition = parent.transform.up * 2;
+            _name.transform.eulerAngles = Vector3.zero;
         }
 
         private void IterateBlocks(IReadOnlyList<BlockView> blocks)
@@ -140,16 +145,25 @@ namespace GameActors
 
         public void ApplySnapshot(SnakeSnapshot snapshot)
         {
+            SetNameParent(transform);
+            
             _blocks.ForEach(b => Destroy(b.gameObject));
             _blocks.Clear();
+
+            transform.localPosition = snapshot.TransformSnapshot.Position;
+            transform.localEulerAngles = snapshot.TransformSnapshot.Rotation;
 
             foreach (var blockSnapshot in snapshot.BlocksSnapshot)
             {
                 var block = AddBlock(blockSnapshot.BlockType);
                 block.transform.localPosition = blockSnapshot.Position;
-                block.transform.eulerAngles = blockSnapshot.Rotation;
+                block.transform.localEulerAngles = blockSnapshot.Rotation;
             }
+            
+            //todo: check this
+            SetNameParent(Head.transform);
         }
+        
         
         private void CheckContact(BlockView myBlock, IHittable element)
         {

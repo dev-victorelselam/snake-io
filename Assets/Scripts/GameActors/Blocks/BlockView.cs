@@ -27,9 +27,9 @@ namespace GameActors.Blocks
         public void Move(float speed, MoveType moveType)
         {
             var transformSnapshot = new TransformSnapshot(transform);
+            
+            transform.localPosition += (transform.up.normalized * speed);
             MoveDirection(moveType);
-            var end = transform.localPosition + (transform.up.normalized * speed);
-            transform.localPosition = end;
             
             if (!IsTail)
                 _next.Move(transformSnapshot);
@@ -53,11 +53,10 @@ namespace GameActors.Blocks
                 case MoveType.Forward:
                     break;
                 case MoveType.Right:
-                    transform.
-                    transform.eulerAngles = new Vector3(0, 0, transform.eulerAngles.z - 90);
+                    transform.Rotate(new Vector3(0, 0, -90), Space.Self);
                     break;
                 case MoveType.Left:
-                    transform.localEulerAngles = new Vector3(0, 0, transform.eulerAngles.z + 90);
+                    transform.Rotate(new Vector3(0, 0, 90), Space.Self);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(moveType), moveType, null);

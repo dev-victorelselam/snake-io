@@ -5,15 +5,15 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 637554190489979597
-    m_Hash: 2300857594
+      ticks: 637558405078158312
+    m_Hash: 2272206419
   m_LockFileStatus:
     m_FilePath: F:/Victor/Documents/PersonalProjects/snake-test/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 637555720897412030
+      ticks: 637558407606088150
     m_Hash: 2877070734
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
@@ -729,6 +729,7 @@ m_PackageAssets:
         - 1.4.5
         - 1.4.6
         - 1.4.7
+        - 1.4.8
         - 1.5.0-pre.2
         - 1.5.0-preview.1
         - 1.5.0-preview.2
@@ -740,8 +741,10 @@ m_PackageAssets:
         - 1.5.1-pre.3
         - 1.5.2
         - 1.5.4
+        - 1.5.5
         - 1.6.0-pre.1
         - 1.6.0-pre.3
+        - 1.6.0-pre.4
         compatible:
         - 1.2.6
         - 1.2.7
@@ -782,6 +785,7 @@ m_PackageAssets:
         - 1.4.5
         - 1.4.6
         - 1.4.7
+        - 1.4.8
         - 1.5.0-pre.2
         - 1.5.0-preview.1
         - 1.5.0-preview.2
@@ -793,8 +797,10 @@ m_PackageAssets:
         - 1.5.1-pre.3
         - 1.5.2
         - 1.5.4
+        - 1.5.5
         - 1.6.0-pre.1
         - 1.6.0-pre.3
+        - 1.6.0-pre.4
         verified: 1.3.7
       dependencies: []
       resolvedDependencies: []

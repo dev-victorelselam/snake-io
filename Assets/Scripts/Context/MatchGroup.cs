@@ -19,5 +19,11 @@ namespace Context
             Player.SnakeController,
             Enemy.SnakeController
         };
+
+        public void PauseGroup(bool pause)
+        {
+            Player.SnakeController.Pause(pause);
+            Enemy.SnakeController.Pause(pause);
+        }
     }
 }

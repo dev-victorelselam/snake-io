@@ -18,7 +18,7 @@ namespace UI
         [SerializeField] private Transform _container;
         [Space(10)]
         [SerializeField] private VerticalLayoutGroup _textsContainer;
-       
+
 
         public void StartUI()
         {
