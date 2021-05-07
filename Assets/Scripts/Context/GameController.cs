@@ -15,7 +15,7 @@ namespace Context
     public partial class GameController : MonoBehaviour
     {
         [SerializeField] private Transform _gameSpace;
-        [SerializeField] private List<SpawnPoints> _spawnPoints;
+        [SerializeField] private SpawnPoints _spawnPoints;
         [SerializeField] private KeyDetector _keyDetector;
         
         private GameCanvas _gameUI;
@@ -58,35 +58,38 @@ namespace Context
         {
             _gameUI.AddPlayer(playerModel);
             var setup = _gameContext.GameSetup;
-            var spawnPoint = _spawnPoints.GetRandom();
-            var fairPosition = Extensions.FindFairPosition(spawnPoint.Player.position, spawnPoint.Enemy.position);
-                
-            var player = SpawnPlayer(setup.SnakePrefab, playerModel, spawnPoint.Player);
-            var enemy = SpawnEnemy(setup.SnakePrefab, playerModel, spawnPoint.Enemy);
-            var block = SpawnBlock(setup.ConsumableBlockPrefab, fairPosition);
-            
-            _matchGroups.Add(new MatchGroup
+            var spawnPoint = _spawnPoints.Spawns.GetRandom().Points;
+
+            var player = SpawnPlayer(setup.SnakePrefab, playerModel, spawnPoint[0]);
+            var enemy = SpawnEnemy(setup.SnakePrefab, playerModel, spawnPoint[1]);
+            var block = SpawnBlock(setup.ConsumableBlockPrefab, player.transform, enemy.transform);
+
+            var group = new MatchGroup
             {
                 PlayerModel = playerModel,
-                
+
                 Player = player,
                 Enemy = enemy,
                 Block = block,
-            });
+            };
+            
+            _matchGroups.Add(group);
+            enemy.SetGroup(group);
         }
 
         private async void RespawnGroup(MatchGroup group)
         {
             await Task.Delay(1000); //wait 1 second to respawn
+
+            var spawnPoint = _spawnPoints.Spawns.GetRandom().Points;
+            group.Player.SnakeController.Respawn(spawnPoint[0]);
+            group.Enemy.SnakeController.Respawn(spawnPoint[1]);
             
-            var spawnPoint = _spawnPoints.GetRandom();
-            group.Player.SnakeController.Respawn(spawnPoint.Player);
-            group.Enemy.SnakeController.Respawn(spawnPoint.Enemy);
-            
-            var fairPosition = Extensions.FindFairPosition(spawnPoint.Player.position, spawnPoint.Enemy.position);
             if (group.Block)
                 Destroy(group.Block.gameObject);
-            var block = SpawnBlock(_gameContext.GameSetup.ConsumableBlockPrefab, fairPosition);
+            
+            var block = SpawnBlock(_gameContext.GameSetup.ConsumableBlockPrefab, 
+                group.Player.transform, group.Enemy.transform);
 
             group.Block = block;
             group.PauseGroup(false);
@@ -104,18 +107,6 @@ namespace Context
         {
             var group = MatchGroupById(snake.Id);
             group.PauseGroup(true);
-            
-            var blocks = snake.Blocks.ToList();
-            blocks.Reverse(); //get from older to newer
-            var timeTravelBlock = blocks.FirstOrDefault(b => b.BlockType == BlockType.TimeTravel);
-            if (timeTravelBlock != null && timeTravelBlock is TimeTravelBlockView t)
-            {
-                await _gameUI.ActivatePowerUp(BlockType.TimeTravel);
-                Rewind(t.Retrieve());
-                
-                group.PauseGroup(false);
-                return;
-            }
 
             if (snake == group.Player.SnakeController) //when die, remove score
                 group.PlayerModel.Score -= 1;
@@ -123,11 +114,11 @@ namespace Context
             RespawnGroup(group);
         }
 
-        private void Rewind(Dictionary<SnakeController, SnakeSnapshot> retrieve)
+        private void Rewind(TimeTravelBlockView timeTravelBlockView)
         {
             //if a snake wasn't present in the moment of the snapshot
             //it'll be ignored by design
-            foreach (var snapshot in retrieve)
+            foreach (var snapshot in timeTravelBlockView.Retrieve())
                 snapshot.Key.ApplySnapshot(snapshot.Value);
         }
 
@@ -135,14 +126,7 @@ namespace Context
         {
             var group = MatchGroupById(snake.Id);
             group.PauseGroup(true);
-
-            var block = BlockFactoring.CreateInstance(snake.transform, blockType);
-            block.transform.localPosition = new Vector3(3000, 0, 0); //throw away to not appear in screen
             
-            if (blockType == BlockType.TimeTravel)
-                CreateSnapShot((TimeTravelBlockView) block);
-                
-            snake.AddBlock(block);
             if (snake == group.Player.SnakeController) //when pick a block, add score
                 group.PlayerModel.Score += _gameContext.GameSetup.BlockScore;
             
@@ -161,12 +145,12 @@ namespace Context
 
     public partial class GameController
     {
-        private ConsumableBlock SpawnBlock(ConsumableBlock prefab, Vector3 fairPosition)
+        private ConsumableBlock SpawnBlock(ConsumableBlock prefab, params Transform[] transforms)
         {
             var blockType = Enum.GetValues(typeof(BlockType)).Cast<BlockType>().GetRandom();
             var block = Instantiate(prefab, _gameSpace);
             
-            block.transform.position = fairPosition;
+            block.transform.position = FairPosition(transforms);
             block.Initialize(blockType);
             
             return block;
@@ -176,38 +160,38 @@ namespace Context
         {
             var player = InstantiateSnake(snakePrefab, spawnPoint)
                 .AddComponent<MovementController>();
-            player.SetConfig(playerModel);
+            player.SetConfig(spawnPoint, playerModel);
 
             player.SnakeController.OnPick.AddListener(Pick);
             player.SnakeController.OnDie.AddListener(Die);
             player.SnakeController.OnKill.AddListener(Kill);
+            player.SnakeController.OnTimeTravelPoint.AddListener(CreateSnapShot);
+            player.SnakeController.OnRewind.AddListener(Rewind);
             return player;
         }
 
         private IAController SpawnEnemy(GameObject snakePrefab, PlayerModel playerModel, Transform spawnPoint)
         {
             var enemy = InstantiateSnake(snakePrefab, spawnPoint).AddComponent<IAController>();
-            enemy.SetConfig(playerModel);
+            enemy.SetConfig(spawnPoint, playerModel);
 
             enemy.SnakeController.OnPick.AddListener(Pick);
             enemy.SnakeController.OnDie.AddListener(Die);
             enemy.SnakeController.OnKill.AddListener(Kill);
+            enemy.SnakeController.OnTimeTravelPoint.AddListener(CreateSnapShot);
+            enemy.SnakeController.OnRewind.AddListener(Rewind);
             return enemy;
         }
 
         private GameObject InstantiateSnake(GameObject snakePrefab, Transform spawnPoint)
         {
             var obj = Instantiate(snakePrefab, _gameSpace);
-            obj.transform.position = spawnPoint.position;
-            obj.transform.eulerAngles = spawnPoint.eulerAngles;
+            obj.transform.position = Vector3.zero;
+            obj.transform.eulerAngles = Vector3.zero;
             return obj;
         }
-        
-        [Serializable]
-        private class SpawnPoints
-        {
-            public Transform Player;
-            public Transform Enemy;
-        }
+
+        private Vector3 FairPosition(params Transform[] transforms) =>
+            Extensions.FindFairPosition(transforms.Select(t => t.position).ToArray());
     }
 }

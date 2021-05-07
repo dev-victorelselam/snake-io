@@ -18,10 +18,13 @@ namespace GameActors.Blocks
         
         private bool IsTail => _next == null;
         public bool IsHead => _previous == null;
+        
+        public bool Enabled { get; private set; }
 
         private void Awake()
         {
             Collider = GetComponent<Collider>();
+            Enabled = true;
         }
 
         public void Move(float speed, MoveType moveType)
@@ -61,6 +64,18 @@ namespace GameActors.Blocks
                 default:
                     throw new ArgumentOutOfRangeException(nameof(moveType), moveType, null);
             }
+        }
+
+        public void DisableBlock()
+        {
+            Enabled = false;
+            gameObject.SetActive(false);
+            
+            if (!IsHead)
+                _previous.SetNextPart(_next);
+            
+            if (!IsTail)
+                _next.Move(new TransformSnapshot(transform));
         }
 
         public void OnTriggerEnter(Collider other)

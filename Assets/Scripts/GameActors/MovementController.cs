@@ -10,12 +10,12 @@ namespace GameActors
         
         public SnakeController SnakeController => _snakeController;
 
-        public void SetConfig(PlayerModel playerModel)
+        public void SetConfig(Transform spawn, PlayerModel playerModel)
         {
             gameObject.name = $"PlayerSnake: {playerModel.Username}";
             _playerModel = playerModel;
             _snakeController = GetComponent<SnakeController>();
-            _snakeController.Initialize(playerModel, playerModel.Username);
+            _snakeController.Initialize(spawn, playerModel, playerModel.Username);
         }
 
         public void Update()

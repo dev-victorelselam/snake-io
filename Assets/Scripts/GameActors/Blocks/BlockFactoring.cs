@@ -30,7 +30,7 @@ namespace GameActors.Blocks
                 case BlockType.SpeedBoost:
                     return gameObj.GetComponent<SpeedBlockView>();
                 case BlockType.BatteringRam:
-                    return gameObj.GetComponent<BlockView>();
+                    return gameObj.GetComponent<BatteringRamBlockView>();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }

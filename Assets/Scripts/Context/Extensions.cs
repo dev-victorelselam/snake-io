@@ -3,11 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using Game;
 using GameActors;
-using GameActors.Blocks;
 using UnityEngine;
 
 namespace Context
 {
+    public static class Direction
+    {
+        public const int Right = 270;
+        public const int Left = 90;
+        public const int Up = 0;
+        public const int Down = 180;
+    }
+    
     public static class Extensions
     {
         public static bool IsNullOrEmpty(this ICollection collection) =>
@@ -48,7 +55,7 @@ namespace Context
             return name;
         }
 
-        public static Vector3 FindFairPosition(params Vector3[] positions)
+        public static Vector3 FindFairPosition(Vector3[] positions)
         {
             //usually the best way to find a fair position is on center of all positions
             var center = new Vector3(0, 0, 0);
@@ -61,5 +68,24 @@ namespace Context
         {
             return new SnakeSnapshot(snakeController);
         }
+        
+        public static Vector3 GetDirection(this Vector3 eulerAngles)
+        {
+            switch (eulerAngles.z)
+            {
+                case Direction.Up:
+                    return new Vector3(0, -1, 0);
+                case Direction.Down:
+                    return new Vector3(0, 1, 0);
+                case Direction.Left:
+                    return new Vector3(1, 0, 0);
+                case Direction.Right:
+                    return new Vector3(-1, 0, 0);
+                default:
+                    return new Vector3(0, -1, 0);
+            }
+        }
+
+        public static float BlockSize = 1.1f;
     }
 }
