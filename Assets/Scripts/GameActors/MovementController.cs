@@ -7,23 +7,30 @@ namespace GameActors
     {
         private SnakeController _snakeController;
         private PlayerModel _playerModel;
-        
-        public SnakeController SnakeController => _snakeController;
 
-        public void SetConfig(Transform spawn, PlayerModel playerModel)
+        public SnakeController SnakeController
+        {
+            get
+            {
+                if (!_snakeController)
+                    _snakeController = GetComponent<SnakeController>();
+                return _snakeController;
+            }
+        }
+
+        public void SetConfig(SpawnPoint spawn, PlayerModel playerModel)
         {
             gameObject.name = $"PlayerSnake: {playerModel.Username}";
             _playerModel = playerModel;
-            _snakeController = GetComponent<SnakeController>();
-            _snakeController.Initialize(spawn, playerModel, playerModel.Username);
+            SnakeController.Initialize(spawn, playerModel, playerModel.Username);
         }
 
         public void Update()
         {
             if (Input.GetKeyDown(_playerModel.RightKey))
-                _snakeController.MoveRight();
+                SnakeController.MoveRight();
             else if (Input.GetKeyDown(_playerModel.LeftKey))
-                _snakeController.MoveLeft();
+                SnakeController.MoveLeft();
         }
     }
 }

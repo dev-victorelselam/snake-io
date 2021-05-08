@@ -11,39 +11,43 @@ namespace GameActors
     {
         [SerializeField] private float _checkingDistance = 5;
         
-        private PlayerModel _playerModel;
         private SnakeController _snakeController;
+        public SnakeController SnakeController
+        {
+            get
+            {
+                if (!_snakeController)
+                    _snakeController = GetComponent<SnakeController>();
+                return _snakeController;
+            }
+        }
         
         private MatchGroup _group;
-        private SnakeController Player => _group.Player.SnakeController;
         private ConsumableBlock Target => _group.Block;
-        public SnakeController SnakeController => _snakeController;
-        public Transform Head => _snakeController.Head.transform;
-        
-        
-        private IHittable _rightCast;
-        private IHittable _leftCast;
-        private IHittable _forwardCast;
+        private BlockView Head => SnakeController.Head;
+
+        private IHittable _rightRaycast;
+        private IHittable _leftRaycast;
+        private IHittable _forwardRaycast;
         private IAStates _state;
 
-        public void SetConfig(Transform spawn, PlayerModel playerModel)
+        public void SetConfig(SpawnPoint spawn, PlayerModel playerModel)
         {
             gameObject.name = $"IASnake: {playerModel.Username}";
-            _snakeController = GetComponent<SnakeController>();
-            _snakeController.Initialize(spawn, playerModel, $"IA-{playerModel.Username}");
+            SnakeController.Initialize(spawn, playerModel, $"IA-{playerModel.Username}");
         }
 
         public void Update()
         {
-            _rightCast = GetRaycastInfo(Head.transform.right);
-            _leftCast = GetRaycastInfo(-Head.transform.right);
-            _forwardCast = GetRaycastInfo(Head.transform.up);
+            _rightRaycast = GetRaycastInfo(Head.transform.right);
+            _leftRaycast = GetRaycastInfo(-Head.transform.right);
+            _forwardRaycast = GetRaycastInfo(Head.transform.up);
 
             var block = Target.transform;
             var distanceFromBlock = block.position - Head.transform.position;
 
             //check if the object is not a consumable block
-            if (_forwardCast != null && _forwardCast as ConsumableBlock == null)
+            if (_forwardRaycast != null && _forwardRaycast as ConsumableBlock == null)
                 _state = IAStates.FleeFromHittable;
             else
                 _state = IAStates.ChaseBlock;
@@ -56,8 +60,6 @@ namespace GameActors
                 case IAStates.FleeFromHittable:
                     Flee();
                     break;
-                case IAStates.ChasePlayer:
-                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -66,28 +68,33 @@ namespace GameActors
         private void Flee()
         {
             //don't flee from consumable block
-            if (_forwardCast is ConsumableBlock block)
+            if (_forwardRaycast is ConsumableBlock block)
                 return;
-            
-            if (_forwardCast is Wall wall)
+
+            if (_forwardRaycast is Wall)
             {
-                if (_leftCast == null)
-                    _snakeController.MoveLeft();
-                else if (_rightCast == null)
-                    _snakeController.MoveRight();
+                if (_leftRaycast == null)
+                    SnakeController.MoveLeft();
+                else if (_rightRaycast == null)
+                    SnakeController.MoveRight();
             }
-            else if (_forwardCast is BlockView blockView)
+            else if (_forwardRaycast is BlockView)
             {
-                if (_leftCast == null || _leftCast is Wall) //give preference to die by wall, so don't give points to players
-                    _snakeController.MoveLeft();
-                else if (_rightCast == null || _rightCast is Wall)
-                    _snakeController.MoveRight();
+                if (_leftRaycast == null) 
+                    SnakeController.MoveLeft();
+                else if (_rightRaycast == null)
+                    SnakeController.MoveRight();
+                
+                //give preference to die by wall, so don't give points to players
+                else if (_leftRaycast is Wall) 
+                    SnakeController.MoveLeft();
+                else if (_rightRaycast is Wall)
+                    SnakeController.MoveRight();
             }
         }
 
         private void ChaseBlock(Vector3 distanceFromBlock)
         {
-            //the priority should be the smallest length to the target
             if (Mathf.Abs(distanceFromBlock.x) > Mathf.Abs(distanceFromBlock.y))
                 AdjustXPosition(distanceFromBlock);
             else
@@ -101,21 +108,21 @@ namespace GameActors
                 ActionByDirection(
                     up:() =>
                     {
-                        if (_rightCast == null) //move to her right if possible
-                            _snakeController.MoveRight();
+                        if (_rightRaycast == null) //move to her right if possible
+                            SnakeController.MoveRight();
                     }, down:() =>
                     {
-                        if (_leftCast == null) //move to her left if possible
-                            _snakeController.MoveLeft();
+                        if (_leftRaycast == null) //move to her left if possible
+                            SnakeController.MoveLeft();
                     }, right:() =>
                     {
                         
                     }, left:() =>
                     {
-                        if (_leftCast == null)
-                            _snakeController.MoveLeft();
-                        else if (_rightCast == null)
-                            _snakeController.MoveRight(); 
+                        if (_leftRaycast == null)
+                            SnakeController.MoveLeft();
+                        else if (_rightRaycast == null)
+                            SnakeController.MoveRight(); 
                     });
             }
             else //block is on our Left
@@ -123,18 +130,18 @@ namespace GameActors
                 ActionByDirection(
                     up:() =>
                     {
-                        if (_leftCast == null) //move to her right if possible
-                            _snakeController.MoveLeft();
+                        if (_leftRaycast == null) //move to her right if possible
+                            SnakeController.MoveLeft();
                     }, down:() =>
                     {
-                        if (_rightCast == null) //move to her left if possible
-                            _snakeController.MoveRight();
+                        if (_rightRaycast == null) //move to her left if possible
+                            SnakeController.MoveRight();
                     }, right:() =>
                     {
-                        if (_leftCast == null)
-                            _snakeController.MoveLeft();
-                        else if (_rightCast == null)
-                            _snakeController.MoveRight();
+                        if (_leftRaycast == null)
+                            SnakeController.MoveLeft();
+                        else if (_rightRaycast == null)
+                            SnakeController.MoveRight();
                     }, left:() =>
                     {
                         
@@ -151,18 +158,18 @@ namespace GameActors
                     {
                     }, down:() =>
                     {
-                        if (_leftCast == null)
-                            _snakeController.MoveLeft();
-                        else if (_rightCast == null)
-                            _snakeController.MoveRight();
+                        if (_leftRaycast == null)
+                            SnakeController.MoveLeft();
+                        else if (_rightRaycast == null)
+                            SnakeController.MoveRight();
                     }, right:() =>
                     {
-                        if (_leftCast == null)
-                            _snakeController.MoveLeft();
+                        if (_leftRaycast == null)
+                            SnakeController.MoveLeft();
                     }, left:() =>
                     {
-                        if (_rightCast == null)
-                            _snakeController.MoveRight();
+                        if (_rightRaycast == null)
+                            SnakeController.MoveRight();
                     });
             }
             else //block is on our Down
@@ -170,42 +177,42 @@ namespace GameActors
                 ActionByDirection(
                     up:() =>
                     {
-                        if (_leftCast == null) //move to her right if possible
-                            _snakeController.MoveLeft();
+                        if (_leftRaycast == null)
+                            SnakeController.MoveLeft();
+                        else if (_rightRaycast == null)
+                            SnakeController.MoveRight();
                     }, down:() =>
                     {
-                        if (_rightCast == null) //move to her left if possible
-                            _snakeController.MoveRight();
+                        
                     }, right:() =>
                     {
-                        if (_leftCast == null)
-                            _snakeController.MoveLeft();
-                        else if(_rightCast == null)
-                            _snakeController.MoveRight();
+                        if (_rightRaycast == null)
+                            SnakeController.MoveRight();
                     }, left:() =>
                     {
-                        
+                        if (_leftRaycast == null)
+                            SnakeController.MoveLeft();
                     });
             }
         }
 
         private void ActionByDirection(Action up, Action down, Action right, Action left)
         {
-            Debug.Log($"IA Angle: {Head.eulerAngles.z}");
+            Debug.Log($"IA Angle: {Head.CurrentAngle}");
             
-            if (Math.Abs(Head.eulerAngles.z - Direction.Up) < 0.1f)
+            if (Math.Abs(Head.CurrentAngle - Direction.Up) < 0.1f)
                 up?.Invoke();
-            else if (Math.Abs(Head.eulerAngles.z - Direction.Down) < 0.1f)
+            else if (Math.Abs(Head.CurrentAngle - Direction.Down) < 0.1f)
                 down?.Invoke();
-            else if (Math.Abs(Head.eulerAngles.z - Direction.Right) < 0.1f)
+            else if (Math.Abs(Head.CurrentAngle - Direction.Right) < 0.1f)
                 right?.Invoke();
-            else if (Math.Abs(Head.eulerAngles.z - Direction.Left) < 0.1f) 
+            else if (Math.Abs(Head.CurrentAngle - Direction.Left) < 0.1f) 
                 left?.Invoke();
         }
 
         private IHittable GetRaycastInfo(Vector3 direction)
         {
-            if (!_snakeController.Head)
+            if (!SnakeController.Head)
                 return null;
 
             var origin = Head.transform.position;
@@ -217,6 +224,10 @@ namespace GameActors
             return null;
         }
 
+        /// <summary>
+        /// By setting group, we always have track of current target
+        /// </summary>
+        /// <param name="group"></param>
         public void SetGroup(MatchGroup group) => _group = group;
     }
     
@@ -224,6 +235,5 @@ namespace GameActors
     {
         ChaseBlock,
         FleeFromHittable,
-        ChasePlayer,
     }
 }

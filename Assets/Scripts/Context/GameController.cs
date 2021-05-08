@@ -15,7 +15,7 @@ namespace Context
     public partial class GameController : MonoBehaviour
     {
         [SerializeField] private Transform _gameSpace;
-        [SerializeField] private SpawnPoints _spawnPoints;
+        [SerializeField] private SpawnPointsList spawnPointsList;
         [SerializeField] private KeyDetector _keyDetector;
         
         private GameCanvas _gameUI;
@@ -58,21 +58,14 @@ namespace Context
         {
             _gameUI.AddPlayer(playerModel);
             var setup = _gameContext.GameSetup;
-            var spawnPoint = _spawnPoints.Spawns.GetRandom().Points;
+            var spawnPoint = spawnPointsList.Spawns.GetRandom().Points;
 
             var player = SpawnPlayer(setup.SnakePrefab, playerModel, spawnPoint[0]);
             var enemy = SpawnEnemy(setup.SnakePrefab, playerModel, spawnPoint[1]);
             var block = SpawnBlock(setup.ConsumableBlockPrefab, player.transform, enemy.transform);
 
-            var group = new MatchGroup
-            {
-                PlayerModel = playerModel,
+            var group = new MatchGroup(playerModel, player, enemy, block);
 
-                Player = player,
-                Enemy = enemy,
-                Block = block,
-            };
-            
             _matchGroups.Add(group);
             enemy.SetGroup(group);
         }
@@ -81,7 +74,7 @@ namespace Context
         {
             await Task.Delay(1000); //wait 1 second to respawn
 
-            var spawnPoint = _spawnPoints.Spawns.GetRandom().Points;
+            var spawnPoint = spawnPointsList.Spawns.GetRandom().Points;
             group.Player.SnakeController.Respawn(spawnPoint[0]);
             group.Enemy.SnakeController.Respawn(spawnPoint[1]);
             
@@ -103,7 +96,7 @@ namespace Context
                 group.PlayerModel.Score += _gameContext.GameSetup.BlockScore;
         }
 
-        private async void Die(SnakeController snake)
+        private void Die(SnakeController snake)
         {
             var group = MatchGroupById(snake.Id);
             group.PauseGroup(true);
@@ -141,7 +134,6 @@ namespace Context
 
         private MatchGroup MatchGroupById(int id) => _matchGroups.First(mg => mg.Id == id);
     }
-    
 
     public partial class GameController
     {
@@ -156,34 +148,36 @@ namespace Context
             return block;
         }
 
-        private MovementController SpawnPlayer(GameObject snakePrefab, PlayerModel playerModel, Transform spawnPoint)
+        private MovementController SpawnPlayer(GameObject snakePrefab, PlayerModel playerModel, SpawnPoint spawnPoint)
         {
             var player = InstantiateSnake(snakePrefab, spawnPoint)
                 .AddComponent<MovementController>();
-            player.SetConfig(spawnPoint, playerModel);
 
             player.SnakeController.OnPick.AddListener(Pick);
             player.SnakeController.OnDie.AddListener(Die);
             player.SnakeController.OnKill.AddListener(Kill);
             player.SnakeController.OnTimeTravelPoint.AddListener(CreateSnapShot);
             player.SnakeController.OnRewind.AddListener(Rewind);
+            
+            player.SetConfig(spawnPoint, playerModel);
             return player;
         }
 
-        private IAController SpawnEnemy(GameObject snakePrefab, PlayerModel playerModel, Transform spawnPoint)
+        private IAController SpawnEnemy(GameObject snakePrefab, PlayerModel playerModel, SpawnPoint spawnPoint)
         {
             var enemy = InstantiateSnake(snakePrefab, spawnPoint).AddComponent<IAController>();
-            enemy.SetConfig(spawnPoint, playerModel);
 
             enemy.SnakeController.OnPick.AddListener(Pick);
             enemy.SnakeController.OnDie.AddListener(Die);
             enemy.SnakeController.OnKill.AddListener(Kill);
             enemy.SnakeController.OnTimeTravelPoint.AddListener(CreateSnapShot);
             enemy.SnakeController.OnRewind.AddListener(Rewind);
+            
+            enemy.SetConfig(spawnPoint, playerModel);
             return enemy;
         }
 
-        private GameObject InstantiateSnake(GameObject snakePrefab, Transform spawnPoint)
+        private GameObject InstantiateSnake(GameObject snakePrefab, SpawnPoint spawnPoint)
         {
             var obj = Instantiate(snakePrefab, _gameSpace);
             obj.transform.position = Vector3.zero;

@@ -15,7 +15,7 @@ namespace Context
             GameController = gameController;
             Popup = popupUtility;
             AvailableKeys = new AvailableKeys(gameSetup.AvailableKeys.ToList());
-            Characters = new Characters(GameSetup.Characters.ToList());
+            Characters = new Characters(GameSetup.CharacterList.Characters.ToList());
         }
 
         public GameController GameController  { get; }

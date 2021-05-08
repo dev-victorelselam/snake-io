@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46bd1090d8ba4ff1a82617754212c1fc, type: 3}
   m_Name: Character1
   m_EditorClassIdentifier: 
-  Image: {fileID: 0}
+  Image: {fileID: 21300000, guid: 02d001664dec1fc47a3bb140c73f8092, type: 3}
   CharacterName: Mutant
   StartBlocks: 010000000200000003000000

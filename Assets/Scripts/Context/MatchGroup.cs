@@ -7,6 +7,15 @@ namespace Context
 {
     public class MatchGroup
     {
+        public MatchGroup(PlayerModel playerModel, MovementController player, IAController enemy, ConsumableBlock block)
+        {
+            PlayerModel = playerModel;
+            
+            Player = player;
+            Enemy = enemy;
+            Block = block;
+        }
+        
         public int Id => PlayerModel.Id;
         public PlayerModel PlayerModel { get; set; }
         public MovementController Player { get; set; }

@@ -6,7 +6,7 @@ namespace GameActors.Blocks
 {
     public class TimeTravelBlockView : BlockView
     {
-        private readonly Dictionary<SnakeController, SnakeSnapshot> _snakeSnapshots = 
+        private Dictionary<SnakeController, SnakeSnapshot> _snakeSnapshots = 
             new Dictionary<SnakeController, SnakeSnapshot>();
         
         public void AddSnapshot(IEnumerable<SnakeController> snakeControllers)
@@ -16,5 +16,9 @@ namespace GameActors.Blocks
         }
 
         public Dictionary<SnakeController, SnakeSnapshot> Retrieve() => _snakeSnapshots;
+        
+        public override object SnapshotPayload() => _snakeSnapshots;
+        public void SetSnapshot(Dictionary<SnakeController, SnakeSnapshot> snapshots) 
+            => _snakeSnapshots = snapshots;
     }
 }

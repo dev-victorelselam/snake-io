@@ -7,6 +7,7 @@ using Game;
 using GameActors.Blocks;
 using GameActors.Blocks.Consumables;
 using TMPro;
+using UI;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -21,6 +22,7 @@ namespace GameActors
         public UnityEvent<TimeTravelBlockView> OnRewind { get; } = new UnityEvent<TimeTravelBlockView>();
         public UnityEvent<SnakeController> OnKill { get; } = new UnityEvent<SnakeController>();
         #endregion
+        
         #region Interface
         public int Loads => Blocks.Count;
         public List<float> SpeedBlocks => Blocks
@@ -30,12 +32,12 @@ namespace GameActors
         #endregion
 
         [SerializeField] private TextMeshPro _name;
+        [SerializeField] private GameObject _eyes;
         
         private readonly List<BlockView> _blocks = new List<BlockView>();
         public int Id => _playerModel.Id;
         public BlockView Head => _blocks.First();
         public List<BlockView> Blocks => _blocks;
-        
 
         private PlayerModel _playerModel;
         private MoveType _lastMoveType;
@@ -43,7 +45,7 @@ namespace GameActors
         private bool _paused;
         private bool _collisionEnabled;
 
-        public void Initialize(Transform spawn, PlayerModel playerModel, string snakeName)
+        public void Initialize(SpawnPoint spawn, PlayerModel playerModel, string snakeName)
         {
             _playerModel = playerModel;
             _name.text = snakeName;
@@ -57,7 +59,7 @@ namespace GameActors
         
         public void Pause(bool pause) => _paused = pause;
 
-        public void Respawn(Transform spawnPoint)
+        public void Respawn(SpawnPoint spawnPoint)
         {
             if (_updateRoutine != null)
             {
@@ -65,12 +67,15 @@ namespace GameActors
                 _updateRoutine = null;
             }
 
-            var startPosition = spawnPoint.position;
-            var dir = spawnPoint.eulerAngles.GetDirection() ;
+            var startPosition = spawnPoint.transform.position;
+            var dir = spawnPoint.Direction.GetVector();
+            var angle = spawnPoint.Direction.GetAngle();
             for (var i = 0; i < _blocks.Count; i++)
             {
-                _blocks[i].transform.position = startPosition + (dir * Extensions.BlockSize * i);
-                _blocks[i].transform.eulerAngles = spawnPoint.eulerAngles;
+                _blocks[i].transform.position = startPosition + (dir * StaticValues.BlockSize * i);
+                _blocks[i].transform.eulerAngles = new Vector3(0, 0, angle);
+                _blocks[i].CurrentAngle = angle;
+                
                 _blocks[i].Collider.enabled = true;
             }
             
@@ -95,21 +100,27 @@ namespace GameActors
                     yield return new WaitForSeconds(0.1f);
                     
                 yield return new WaitForSeconds(this.Speed()); 
-                Head.Move(Extensions.BlockSize, _lastMoveType);
+                Head.Move(StaticValues.BlockSize, _lastMoveType);
                 _lastMoveType = MoveType.Forward;
             }
         }
         
         private void Update()
         {
-            if (Head != null)
+            if (Head)
             {
                 _name.transform.position = Head.transform.position + new Vector3(0, 2, -5);
                 _name.transform.eulerAngles = Vector3.zero;
             }
+
+            if (_eyes)
+            {
+                _eyes.transform.position = Head.transform.position + new Vector3(0, 0.5f, -5);
+                _eyes.transform.eulerAngles = Head.transform.eulerAngles;
+            }
         }
 
-        private BlockView AddBlock(BlockType type)
+        public BlockView AddBlock(BlockType type)
         {
             var obj = BlockFactoring.CreateInstance(transform, type);
             return AddBlock(obj);
@@ -117,7 +128,6 @@ namespace GameActors
         
         private BlockView AddBlock(BlockView obj)
         {
-            obj.Collider.enabled = false;
             obj.transform.SetSiblingIndex(0);
             obj.OnContact.AddListener(CheckCollision);
             _blocks.Insert(0, obj);
@@ -146,37 +156,17 @@ namespace GameActors
             }
         }
 
-        public void ApplySnapshot(SnakeSnapshot snapshot)
-        {
-            _blocks.ForEach(b => Destroy(b.gameObject));
-            _blocks.Clear();
-
-            transform.localPosition = snapshot.TransformSnapshot.Position;
-            transform.localEulerAngles = snapshot.TransformSnapshot.Rotation;
-
-            foreach (var blockSnapshot in snapshot.BlocksSnapshot)
-            {
-                var block = AddBlock(blockSnapshot.BlockType);
-                block.transform.localPosition = blockSnapshot.Position;
-                block.transform.localEulerAngles = blockSnapshot.Rotation;
-            }
-        }
-
         private void CheckCollision(BlockView myBlock, IHittable element)
         {
-            if (_paused || !_collisionEnabled)
+            if (_paused)
                 return;
 
             switch (element)
             {
                 case Wall _:
-                    if (myBlock.IsHead) //avoid death in spawn where blocks are in vertical 
-                    {
-                        Pause(true);
-                        OnDie.Invoke(this);
-                    }
+                    if (myBlock.IsHead)
+                        CheckForDeath();
                     break;
-                
                 case ConsumableBlock consumableBlock:
                     Pause(true);
                     AddBlock(consumableBlock.BlockType);
@@ -184,6 +174,9 @@ namespace GameActors
                     break;
                 
                 case BlockView colliderBlock :
+                    if (!_collisionEnabled)
+                        return;
+                    
                     if (myBlock.IsHead)
                         CheckForDeath(colliderBlock);
                     else
@@ -192,23 +185,27 @@ namespace GameActors
             }
         }
 
-        private void CheckForDeath(BlockView colliderBlock)
+        private void CheckForDeath(BlockView colliderBlock = null)
         {
-            if (HasBlockOfType(BlockType.BatteringRam))
+            if (colliderBlock != null)
             {
-                var batteringRam = (BatteringRamBlockView) Blocks.Last(b => b.BlockType == BlockType.BatteringRam);
-                if (batteringRam.ActivateBatteringRam(this, colliderBlock))
-                    return;
+                if (HasBlockOfType(BlockType.BatteringRam))
+                {
+                    var batteringRam = (BatteringRamBlockView) Blocks.Last(b => b.BlockType == BlockType.BatteringRam);
+                    if (batteringRam.ActivateBatteringRam(this, colliderBlock))
+                        return;
+                }
+                Debug.Log($"{gameObject.name} Die by: {colliderBlock.transform.parent.name}");
             }
-            
-            else if (HasBlockOfType(BlockType.TimeTravel))
+
+            if (HasBlockOfType(BlockType.TimeTravel))
             {
                 var timeTravelBlock = Blocks.Last(b => b.BlockType == BlockType.TimeTravel);
                 OnRewind.Invoke((TimeTravelBlockView) timeTravelBlock);
+                
                 return;
             }
-            
-            Debug.LogError($"{gameObject.name} Die by: {colliderBlock.transform.parent.name}");
+
             Pause(true);
             OnDie.Invoke(this);
         }
@@ -220,6 +217,7 @@ namespace GameActors
             _collisionEnabled = true;
         }
 
-        private bool HasBlockOfType(BlockType blockType) => Blocks.Any(b => b.BlockType == blockType);
+        private bool HasBlockOfType(BlockType blockType) => Blocks
+            .Any(b => b.BlockType == blockType && b.gameObject.activeInHierarchy);
     }
 }

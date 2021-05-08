@@ -1,5 +1,4 @@
 ﻿using GameActors.Blocks.Consumables;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,8 +10,8 @@ namespace Context
     [CreateAssetMenu(fileName = "Game Setup", menuName = "Snake/GameSetup")]
     public class GameSetup : ScriptableObject
     {
-        [Header("General Configs")]
-        public CharacterSettings[] Characters;
+        [Header("General Configs")] 
+        public CharacterList CharacterList;
         public KeyCode[] AvailableKeys = {
             KeyCode.Alpha0,
             KeyCode.Alpha1,
@@ -57,12 +56,15 @@ namespace Context
         
         [Header("Snake Gameplay Configs")]
         [Space(10)]
-        public GameObject SnakePrefab;
-        public ConsumableBlock ConsumableBlockPrefab;
-        public Text PlayerScorePrefab;
         [Range(5, 100)] public float BaseSpeed;
         [Range(0, 1)] public float LoadedSpeedDecay;
         [Range(0, 10)] public int BlockScore;
+        
+        [Header("Prefabs")]
+        [Space(10)]
+        public GameObject SnakePrefab;
+        public ConsumableBlock ConsumableBlockPrefab;
+        public Text PlayerScorePrefab;
         public BlockModel[] Blocks;
     }
 }

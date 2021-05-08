@@ -3,16 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using Game;
 using GameActors;
+using GameActors.Blocks;
+using UI;
 using UnityEngine;
 
 namespace Context
 {
     public static class Direction
     {
-        public const int Right = 270;
-        public const int Left = 90;
         public const int Up = 0;
+        public const int Right = 270;
         public const int Down = 180;
+        public const int Left = 90;
+
+    }
+
+    public static class StaticValues
+    {
+        public static float BlockSize = 1.1f;
     }
     
     public static class Extensions
@@ -58,34 +66,85 @@ namespace Context
         public static Vector3 FindFairPosition(Vector3[] positions)
         {
             //usually the best way to find a fair position is on center of all positions
+            //however, center is boring and always give the same gameplay, so we add a small random offset
+            const float minOffset = -20f;
+            const float maxOffset = 20f;
+            var offSet = new Vector3(Random.Range(minOffset, maxOffset), Random.Range(minOffset, maxOffset), 0);
+
             var center = new Vector3(0, 0, 0);
             foreach (var t in positions)
                 center += t;
-            return center / positions.Length;
+            center /= positions.Length;
+
+            return center + offSet;
         }
 
-        public static SnakeSnapshot GetSnapshot(this SnakeController snakeController)
+        public static SnakeSnapshot GetSnapshot(this SnakeController snakeController) 
+            => new SnakeSnapshot(snakeController);
+
+        public static Vector3 GetVector(this SpawnPoint.SpawnDirection dir)
         {
-            return new SnakeSnapshot(snakeController);
-        }
-        
-        public static Vector3 GetDirection(this Vector3 eulerAngles)
-        {
-            switch (eulerAngles.z)
+            switch (dir)
             {
-                case Direction.Up:
+                case SpawnPoint.SpawnDirection.Up:
                     return new Vector3(0, -1, 0);
-                case Direction.Down:
+                case SpawnPoint.SpawnDirection.Down:
                     return new Vector3(0, 1, 0);
-                case Direction.Left:
+                case SpawnPoint.SpawnDirection.Left:
                     return new Vector3(1, 0, 0);
-                case Direction.Right:
+                case SpawnPoint.SpawnDirection.Right:
                     return new Vector3(-1, 0, 0);
                 default:
                     return new Vector3(0, -1, 0);
             }
         }
+        
+        public static int GetAngle(this SpawnPoint.SpawnDirection dir)
+        {
+            switch (dir)
+            {
+                case SpawnPoint.SpawnDirection.Up:
+                    return Direction.Up;
+                case SpawnPoint.SpawnDirection.Down:
+                    return Direction.Down;
+                case SpawnPoint.SpawnDirection.Left:
+                    return Direction.Left;
+                case SpawnPoint.SpawnDirection.Right:
+                    return Direction.Right;
+                default:
+                    return Direction.Up;
+            }
+        }
 
-        public static float BlockSize = 1.1f;
+        public static void ApplySnapshot(this SnakeController snakeController, SnakeSnapshot snapshot)
+        {
+            snakeController.Blocks.ForEach(b => Object.Destroy(b.gameObject));
+            snakeController.Blocks.Clear();
+
+            foreach (var blockSnapshot in snapshot.BlocksSnapshot)
+            {
+                var block = snakeController.AddBlock(blockSnapshot.BlockType);
+                if (block is TimeTravelBlockView timeTravelBlockView)
+                {
+                    var timeTravel = (Dictionary<SnakeController, SnakeSnapshot>) blockSnapshot.Payload;
+                    timeTravelBlockView.SetSnapshot(timeTravel);
+                }
+                
+                block.transform.localPosition = blockSnapshot.Position;
+                block.transform.localEulerAngles = blockSnapshot.Rotation;
+            }
+        }
+        
+        public static Bounds Bounds(this Camera camera)
+        {
+            var x = camera.transform.position.x;
+            var y = camera.transform.position.y;
+            var size = camera.orthographicSize * 2;
+            
+            var width = size * Screen.width / Screen.height;
+            var height = size;
+ 
+            return new Bounds(new Vector3(x, y, 0), new Vector3(width, height, 0));
+        }
     }
 }

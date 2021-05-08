@@ -8,7 +8,6 @@ namespace GameActors.Blocks
     [RequireComponent(typeof(Rigidbody))]
     public class BlockView : MonoBehaviour, IHittable
     {
-        private const int TimeToEnableCollision = 1;
         public UnityEvent<BlockView, IHittable> OnContact = new UnityEvent<BlockView, IHittable>();
         
         public BlockType BlockType { get; private set; }
@@ -19,12 +18,25 @@ namespace GameActors.Blocks
         private bool IsTail => _next == null;
         public bool IsHead => _previous == null;
         
-        public bool Enabled { get; private set; }
+        private int _currentAngle;
+        public int CurrentAngle
+        {
+            get => _currentAngle;
+            set
+            {
+                var v = value;
+                if (v > 270)
+                    v = 0;
+                if (v < 0)
+                    v = 270;
+                
+                _currentAngle = v;
+            }
+        }
 
-        private void Awake()
+        protected virtual void Awake()
         {
             Collider = GetComponent<Collider>();
-            Enabled = true;
         }
 
         public void Move(float speed, MoveType moveType)
@@ -49,16 +61,18 @@ namespace GameActors.Blocks
                 _next.Move(newTransformSnapshot);
         }
 
-        public void MoveDirection(MoveType moveType)
+        private void MoveDirection(MoveType moveType)
         {
             switch (moveType)
             {
                 case MoveType.Forward:
                     break;
                 case MoveType.Right:
+                    CurrentAngle -= 90;
                     transform.Rotate(new Vector3(0, 0, -90), Space.Self);
                     break;
                 case MoveType.Left:
+                    CurrentAngle += 90;
                     transform.Rotate(new Vector3(0, 0, 90), Space.Self);
                     break;
                 default:
@@ -68,28 +82,24 @@ namespace GameActors.Blocks
 
         public void DisableBlock()
         {
-            Enabled = false;
             gameObject.SetActive(false);
             
             if (!IsHead)
                 _previous.SetNextPart(_next);
-            
+
             if (!IsTail)
+            {
+                _next.SetPreviousPart(_previous);
                 _next.Move(new TransformSnapshot(transform));
+            }
         }
 
         public void OnTriggerEnter(Collider other)
         {
-            if (_next)
+            if (CheckForAdjacentBlocks(other))
             {
-                if (other.gameObject == _next.gameObject)
-                    return;
-            }
-
-            if (_previous)
-            {
-                if (other.gameObject == _previous.gameObject)
-                    return;
+                Debug.Log("Contact with my block!");
+                return;
             }
 
             var hittable = other.gameObject.GetComponent<IHittable>();
@@ -99,8 +109,32 @@ namespace GameActors.Blocks
             OnContact.Invoke(this, hittable);
         }
 
+        /// <summary>
+        /// Avoid collisions with adjacent blocks
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        private bool CheckForAdjacentBlocks(Collider other)
+        {
+            if (_next)
+            {
+                if (other.gameObject == _next.gameObject)
+                    return true;
+            }
+
+            if (_previous)
+            {
+                if (other.gameObject == _previous.gameObject)
+                    return true;
+            }
+
+            return false;
+        }
+
         public void SetNextPart(BlockView blockView) => _next = blockView;
         public void SetPreviousPart(BlockView blockView) => _previous = blockView;
         public void SetBlockType(BlockType blockType) => BlockType = blockType;
+
+        public virtual object SnapshotPayload() => null;
     }
 }
