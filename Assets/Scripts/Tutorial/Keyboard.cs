@@ -12,18 +12,18 @@ namespace Tutorial
         [SerializeField] private Key[] _letters1;
         [SerializeField] private Key[] _letters2;
         [SerializeField] private Key[] _letters3;
-        private List<Key> _allKeysList;
+        private List<Key> _allKeysView;
 
         public void Initialize()
         {
             var allKeys = ContextProvider.Context.AvailableKeys.All;
             
-            _allKeysList = _numbersKeys.ToList();
-            _allKeysList.AddRange(_letters1);
-            _allKeysList.AddRange(_letters2);
-            _allKeysList.AddRange(_letters3);
+            _allKeysView = _numbersKeys.ToList();
+            _allKeysView.AddRange(_letters1);
+            _allKeysView.AddRange(_letters2);
+            _allKeysView.AddRange(_letters3);
 
-            if (_allKeysList.Count != allKeys.Count)
+            if (_allKeysView.Count != allKeys.Count)
             {
                 Debug.LogError("Check Available Keys!");
                 return;
@@ -37,10 +37,10 @@ namespace Tutorial
             var allKeys = ContextProvider.Context.AvailableKeys.All;
             var availableKeys = ContextProvider.Context.AvailableKeys.Available;
             
-            for (var i = 0; i < _allKeysList.Count; i++)
+            for (var i = 0; i < _allKeysView.Count; i++)
             {
-                _allKeysList[i].SetKey(allKeys[i]);
-                _allKeysList[i].Enable(availableKeys.Contains(allKeys[i]));
+                _allKeysView[i].SetKey(allKeys[i]);
+                _allKeysView[i].Enable(availableKeys.Contains(allKeys[i]));
             }
         }
     }

@@ -36,8 +36,8 @@ namespace GameActors.Blocks.Consumables
                     Destroy(_block.gameObject);
                 
                 _block = BlockFactoring.CreateInstance(transform, blockType);
-                if (_block)
-                    Destroy(_block.Collider);
+                Destroy(_block.Collider);
+                    
                 yield return new WaitForSeconds(_timeToChange);
             }
 

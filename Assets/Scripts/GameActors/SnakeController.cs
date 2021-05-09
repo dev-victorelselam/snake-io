@@ -68,7 +68,7 @@ namespace GameActors
             }
 
             var startPosition = spawnPoint.transform.position;
-            var dir = spawnPoint.Direction.GetVector();
+            var dir = spawnPoint.Direction.GetInverseVector();
             var angle = spawnPoint.Direction.GetAngle();
             for (var i = 0; i < _blocks.Count; i++)
             {
@@ -109,13 +109,13 @@ namespace GameActors
         {
             if (Head)
             {
-                _name.transform.position = Head.transform.position + new Vector3(0, 2, -5);
+                _name.transform.localPosition = Head.transform.localPosition + new Vector3(0, 2, -5);
                 _name.transform.eulerAngles = Vector3.zero;
             }
 
             if (_eyes)
             {
-                _eyes.transform.position = Head.transform.position + new Vector3(0, 0.5f, -5);
+                _eyes.transform.localPosition = Head.transform.localPosition + new Vector3(0, 0.5f, -5);
                 _eyes.transform.eulerAngles = Head.transform.eulerAngles;
             }
         }
@@ -200,7 +200,8 @@ namespace GameActors
 
             if (HasBlockOfType(BlockType.TimeTravel))
             {
-                var timeTravelBlock = Blocks.Last(b => b.BlockType == BlockType.TimeTravel);
+                //priority is from newer to older, avoiding player to lose lots of blocks
+                var timeTravelBlock = Blocks.First(b => b.BlockType == BlockType.TimeTravel);
                 OnRewind.Invoke((TimeTravelBlockView) timeTravelBlock);
                 
                 return;

@@ -20,7 +20,7 @@ namespace Context
 
     public static class StaticValues
     {
-        public static float BlockSize = 1.1f;
+        public static float BlockSize = 2.1f;
     }
     
     public static class Extensions
@@ -82,7 +82,7 @@ namespace Context
         public static SnakeSnapshot GetSnapshot(this SnakeController snakeController) 
             => new SnakeSnapshot(snakeController);
 
-        public static Vector3 GetVector(this SpawnPoint.SpawnDirection dir)
+        public static Vector3 GetInverseVector(this SpawnPoint.SpawnDirection dir)
         {
             switch (dir)
             {
@@ -132,6 +132,7 @@ namespace Context
                 
                 block.transform.localPosition = blockSnapshot.Position;
                 block.transform.localEulerAngles = blockSnapshot.Rotation;
+                block.Collider.enabled = true;
             }
         }
         
