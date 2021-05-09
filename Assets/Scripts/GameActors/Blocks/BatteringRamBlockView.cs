@@ -6,7 +6,6 @@ namespace GameActors.Blocks
     {
         public bool ActivateBatteringRam(SnakeController mySnake, BlockView contactBlock)
         {
-            return false;
             //if we hit on ourself, skip battering ram
             if (mySnake.Blocks.Any(b => b == contactBlock))
                 return false;

@@ -7,7 +7,6 @@ using Game;
 using GameActors.Blocks;
 using GameActors.Blocks.Consumables;
 using TMPro;
-using UI;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -36,7 +35,7 @@ namespace GameActors
         
         private readonly List<BlockView> _blocks = new List<BlockView>();
         public int Id => _playerModel.Id;
-        public BlockView Head => _blocks.First();
+        public BlockView Head => _blocks.FirstOrDefault();
         public List<BlockView> Blocks => _blocks;
 
         private PlayerModel _playerModel;
@@ -130,6 +129,7 @@ namespace GameActors
         {
             obj.transform.SetSiblingIndex(0);
             obj.OnContact.AddListener(CheckCollision);
+            obj.OnBlockDisabled.AddListener(DisableBlock);
             _blocks.Insert(0, obj);
 
             IterateBlocks(_blocks);
@@ -138,6 +138,24 @@ namespace GameActors
                 OnTimeTravelPoint.Invoke((TimeTravelBlockView) obj);
 
             return obj;
+        }
+
+        private void DisableBlock(BlockView block)
+        {
+            var snapshot = new TransformSnapshot(block.transform);
+            var index = _blocks.IndexOf(block);
+            if (!block.IsTail)
+                _blocks[index + 1].Move(snapshot);
+
+            _blocks.Remove(block);
+            Destroy(block.gameObject);
+
+            if (_blocks.IsNullOrEmpty())
+            {
+                //todo: notify game controller that this player is out
+            }
+            
+            IterateBlocks(_blocks);
         }
 
         private void IterateBlocks(IReadOnlyList<BlockView> blocks)

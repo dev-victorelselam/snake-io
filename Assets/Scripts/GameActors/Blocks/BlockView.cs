@@ -9,13 +9,14 @@ namespace GameActors.Blocks
     public class BlockView : MonoBehaviour, IHittable
     {
         public UnityEvent<BlockView, IHittable> OnContact = new UnityEvent<BlockView, IHittable>();
+        public UnityEvent<BlockView> OnBlockDisabled = new UnityEvent<BlockView>();
         
         public BlockType BlockType { get; private set; }
         private BlockView _next;
         private BlockView _previous;
         public Collider Collider { get; private set; }
         
-        private bool IsTail => _next == null;
+        public bool IsTail => _next == null;
         public bool IsHead => _previous == null;
         
         private int _currentAngle;
@@ -82,16 +83,7 @@ namespace GameActors.Blocks
 
         public void DisableBlock()
         {
-            gameObject.SetActive(false);
-            
-            if (!IsHead)
-                _previous.SetNextPart(_next);
-
-            if (!IsTail)
-            {
-                _next.SetPreviousPart(_previous);
-                _next.Move(new TransformSnapshot(transform));
-            }
+            OnBlockDisabled.Invoke(this);
         }
 
         public void OnTriggerEnter(Collider other)

@@ -35,7 +35,6 @@ namespace GameActors
         {
             gameObject.name = $"IASnake: {playerModel.Username}";
             SnakeController.Initialize(spawn, playerModel, $"IA-{playerModel.Username}");
-            SnakeController.gameObject.SetActive(false);
         }
 
         public void Update()
