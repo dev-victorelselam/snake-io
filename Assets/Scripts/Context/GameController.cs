@@ -95,9 +95,12 @@ namespace Context
             var deadSnakeGroup = MatchGroupById(deadSnake.Id);
             deadSnakeGroup.PauseGroup(true);
             deadSnakeGroup.UpdateScore(deadSnake, -_gameContext.GameSetup.KillScore);
-            
-            var killerSnakeGroup = MatchGroupById(killerSnake.Id);
-            killerSnakeGroup.UpdateScore(killerSnake, _gameContext.GameSetup.KillScore);
+
+            if (killerSnake)
+            {
+                var killerSnakeGroup = MatchGroupById(killerSnake.Id);
+                killerSnakeGroup.UpdateScore(killerSnake, _gameContext.GameSetup.KillScore);
+            }
 
             _gameUI.NotifyKill(deadSnake, killerSnake);
 

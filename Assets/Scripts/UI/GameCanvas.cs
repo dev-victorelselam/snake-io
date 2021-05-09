@@ -65,7 +65,9 @@ namespace UI
         {
             var prefab = _context.GameSetup.NotificationPrefab;
             var notification = Instantiate(prefab, _notificationContainer);
-            notification.Activate($"{killerSnake.Name} -> {deadSnake.Name}");
+
+            var snakeName = killerSnake == null ? string.Empty : killerSnake.Name;
+            notification.Activate($"{snakeName} -> {deadSnake.Name}");
         }
     }
 

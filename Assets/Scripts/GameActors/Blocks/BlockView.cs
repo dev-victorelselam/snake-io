@@ -101,7 +101,8 @@ namespace GameActors.Blocks
                 await Task.Delay(250);
             }
 
-            Destroy(gameObject);
+            if (gameObject)
+                Destroy(gameObject);
         }
 
         public void OnTriggerEnter(Collider other)
