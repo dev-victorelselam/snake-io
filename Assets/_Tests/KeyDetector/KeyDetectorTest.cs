@@ -29,7 +29,7 @@ namespace _Tests.KeyDetector
                 .ShouldBe(KeyCode.A).Because($"Test Key Provider specified that {KeyCode.A} is the first key").Run();
         
             Assert(() => _keysDetected[1])
-                .ShouldBe(KeyCode.D).Because($"Test Key Provider specified that {KeyCode.D} is the first key").Run();
+                .ShouldBe(KeyCode.D).Because($"Test Key Provider specified that {KeyCode.D} is the second key").Run();
         
             Finish();
         }
