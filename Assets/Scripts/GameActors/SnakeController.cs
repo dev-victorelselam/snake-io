@@ -152,7 +152,6 @@ namespace GameActors
                 _blocks[index + 1].Move(snapshot);
 
             _blocks.Remove(block);
-            Destroy(block.gameObject);
 
             if (_blocks.IsNullOrEmpty())
             {

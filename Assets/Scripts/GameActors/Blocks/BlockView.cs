@@ -87,6 +87,8 @@ namespace GameActors.Blocks
 
         public async void DisableBlock()
         {
+            OnBlockDisabled.Invoke(this);
+            
             var mesh = GetComponentInChildren<MeshRenderer>();
             for (var i = 0; i < 4; i++) //500x4 = 2s
             {
@@ -97,8 +99,8 @@ namespace GameActors.Blocks
                     mesh.enabled = true;
                 await Task.Delay(250);
             }
-            
-            OnBlockDisabled.Invoke(this);
+
+            Destroy(gameObject);
         }
 
         public void OnTriggerEnter(Collider other)
