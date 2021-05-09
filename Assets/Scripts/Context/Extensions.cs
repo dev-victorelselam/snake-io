@@ -4,23 +4,29 @@ using System.Linq;
 using Game;
 using GameActors;
 using GameActors.Blocks;
-using UI;
 using UnityEngine;
 
 namespace Context
 {
-    public static class Direction
+    public static class Angle
     {
         public const int Up = 0;
         public const int Right = 270;
         public const int Down = 180;
         public const int Left = 90;
+    }
 
+    public static class Direction
+    {
+        public static Vector3 Up = new Vector3(0, 1, 0);
+        public static Vector3 Right = new Vector3(1, 0, 0);
+        public static Vector3 Down = new Vector3(0, -1, 0);
+        public static Vector3 Left = new Vector3(-1, 0, 0);
     }
 
     public static class StaticValues
     {
-        public static float BlockSize = 2.1f;
+        public static float BlockDisplacement = 2.1f;
     }
     
     public static class Extensions
@@ -67,8 +73,8 @@ namespace Context
         {
             //usually the best way to find a fair position is on center of all positions
             //however, center is boring and always give the same gameplay, so we add a small random offset
-            const float minOffset = -20f;
-            const float maxOffset = 20f;
+            const float minOffset = -12f;
+            const float maxOffset = 12f;
             var offSet = new Vector3(Random.Range(minOffset, maxOffset), Random.Range(minOffset, maxOffset), 0);
 
             var center = new Vector3(0, 0, 0);
@@ -82,20 +88,20 @@ namespace Context
         public static SnakeSnapshot GetSnapshot(this SnakeController snakeController) 
             => new SnakeSnapshot(snakeController);
 
-        public static Vector3 GetInverseVector(this SpawnPoint.SpawnDirection dir)
+        public static Vector3 GetInverseDirection(this SpawnPoint.SpawnDirection dir)
         {
             switch (dir)
             {
                 case SpawnPoint.SpawnDirection.Up:
-                    return new Vector3(0, -1, 0);
+                    return Direction.Up * -1;
                 case SpawnPoint.SpawnDirection.Down:
-                    return new Vector3(0, 1, 0);
+                    return Direction.Down * -1;
                 case SpawnPoint.SpawnDirection.Left:
-                    return new Vector3(1, 0, 0);
+                    return Direction.Left * -1;
                 case SpawnPoint.SpawnDirection.Right:
-                    return new Vector3(-1, 0, 0);
+                    return Direction.Right * -1;
                 default:
-                    return new Vector3(0, -1, 0);
+                    return Direction.Up * -1;
             }
         }
         
@@ -104,16 +110,29 @@ namespace Context
             switch (dir)
             {
                 case SpawnPoint.SpawnDirection.Up:
-                    return Direction.Up;
+                    return Angle.Up;
                 case SpawnPoint.SpawnDirection.Down:
-                    return Direction.Down;
+                    return Angle.Down;
                 case SpawnPoint.SpawnDirection.Left:
-                    return Direction.Left;
+                    return Angle.Left;
                 case SpawnPoint.SpawnDirection.Right:
-                    return Direction.Right;
+                    return Angle.Right;
                 default:
-                    return Direction.Up;
+                    return Angle.Up;
             }
+        }
+
+        public static Vector3 RandomDirection()
+        {
+            var random = Random.Range(0f, 1f);
+            if (random <= 0.25)
+                return Direction.Up;
+            if (random <= 0.5)
+                return Direction.Down;
+            if (random <= 0.75)
+                return Direction.Left;
+            
+            return Direction.Right;
         }
 
         public static void ApplySnapshot(this SnakeController snakeController, SnakeSnapshot snapshot)

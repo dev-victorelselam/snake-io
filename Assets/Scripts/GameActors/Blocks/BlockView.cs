@@ -8,8 +8,10 @@ namespace GameActors.Blocks
     [RequireComponent(typeof(Rigidbody))]
     public class BlockView : MonoBehaviour, IHittable
     {
-        public UnityEvent<BlockView, IHittable> OnContact = new UnityEvent<BlockView, IHittable>();
-        public UnityEvent<BlockView> OnBlockDisabled = new UnityEvent<BlockView>();
+        [HideInInspector] public UnityEvent<BlockView, IHittable> OnContact = 
+            new UnityEvent<BlockView, IHittable>();
+        [HideInInspector] public UnityEvent<BlockView> OnBlockDisabled 
+            = new UnityEvent<BlockView>();
         
         public BlockType BlockType { get; private set; }
         private BlockView _next;

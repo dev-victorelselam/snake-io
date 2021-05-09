@@ -200,13 +200,13 @@ namespace GameActors
         {
             Debug.Log($"IA Angle: {Head.CurrentAngle}");
             
-            if (Math.Abs(Head.CurrentAngle - Direction.Up) < 0.1f)
+            if (Math.Abs(Head.CurrentAngle - Angle.Up) < 0.1f)
                 up?.Invoke();
-            else if (Math.Abs(Head.CurrentAngle - Direction.Down) < 0.1f)
+            else if (Math.Abs(Head.CurrentAngle - Angle.Down) < 0.1f)
                 down?.Invoke();
-            else if (Math.Abs(Head.CurrentAngle - Direction.Right) < 0.1f)
+            else if (Math.Abs(Head.CurrentAngle - Angle.Right) < 0.1f)
                 right?.Invoke();
-            else if (Math.Abs(Head.CurrentAngle - Direction.Left) < 0.1f) 
+            else if (Math.Abs(Head.CurrentAngle - Angle.Left) < 0.1f) 
                 left?.Invoke();
         }
 

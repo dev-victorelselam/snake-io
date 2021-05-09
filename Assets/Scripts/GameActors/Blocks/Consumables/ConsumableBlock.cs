@@ -45,5 +45,11 @@ namespace GameActors.Blocks.Consumables
             blockTypes.Reverse();
             StartCoroutine(StartChanging(blockTypes));
         }
+
+        public void OnPick()
+        {
+            if (_block is ProjectileBlockView projectileBlockView)
+                projectileBlockView.Shoot();
+        }
     }
 }

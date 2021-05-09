@@ -16,7 +16,7 @@ namespace GameActors
     {
         #region Events
         public UnityEvent<SnakeController> OnDie { get; } = new UnityEvent<SnakeController>();
-        public UnityEvent<SnakeController, BlockType> OnPick { get; } = new UnityEvent<SnakeController, BlockType>();
+        public UnityEvent<SnakeController> OnPick { get; } = new UnityEvent<SnakeController>();
         public UnityEvent<TimeTravelBlockView> OnTimeTravelPoint { get; } = new UnityEvent<TimeTravelBlockView>();
         public UnityEvent<TimeTravelBlockView> OnRewind { get; } = new UnityEvent<TimeTravelBlockView>();
         public UnityEvent<SnakeController> OnKill { get; } = new UnityEvent<SnakeController>();
@@ -67,11 +67,11 @@ namespace GameActors
             }
 
             var startPosition = spawnPoint.transform.position;
-            var dir = spawnPoint.Direction.GetInverseVector();
+            var dir = spawnPoint.Direction.GetInverseDirection();
             var angle = spawnPoint.Direction.GetAngle();
             for (var i = 0; i < _blocks.Count; i++)
             {
-                _blocks[i].transform.position = startPosition + (dir * StaticValues.BlockSize * i);
+                _blocks[i].transform.position = startPosition + (dir * StaticValues.BlockDisplacement * i);
                 _blocks[i].transform.eulerAngles = new Vector3(0, 0, angle);
                 _blocks[i].CurrentAngle = angle;
                 
@@ -99,7 +99,7 @@ namespace GameActors
                     yield return new WaitForSeconds(0.1f);
                     
                 yield return new WaitForSeconds(this.Speed()); 
-                Head.Move(StaticValues.BlockSize, _lastMoveType);
+                Head.Move(StaticValues.BlockDisplacement, _lastMoveType);
                 _lastMoveType = MoveType.Forward;
             }
         }
@@ -153,6 +153,7 @@ namespace GameActors
             if (_blocks.IsNullOrEmpty())
             {
                 //todo: notify game controller that this player is out
+                //todo: make a "kills feed"
             }
             
             IterateBlocks(_blocks);
@@ -181,16 +182,17 @@ namespace GameActors
 
             switch (element)
             {
+                case ConsumableBlock consumableBlock:
+                    consumableBlock.OnPick();
+                    AddBlock(consumableBlock.BlockType);
+                    OnPick.Invoke(this);
+                    break;
+                
                 case Wall _:
                     if (myBlock.IsHead)
                         CheckForDeath();
                     break;
-                case ConsumableBlock consumableBlock:
-                    Pause(true);
-                    AddBlock(consumableBlock.BlockType);
-                    OnPick.Invoke(this, consumableBlock.BlockType);
-                    break;
-                
+
                 case BlockView colliderBlock :
                     if (!_collisionEnabled)
                         return;
@@ -200,6 +202,11 @@ namespace GameActors
                     else
                         OnKill.Invoke(this);
                     break;
+                
+                case Projectile _ :
+                    CheckForDeath();
+                    break;
+                
             }
         }
 

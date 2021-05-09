@@ -109,6 +109,8 @@
      <Compile Include="Assets\Scripts\Context\ContextProvider.cs" />
      <Compile Include="Assets\Scripts\Tutorial\KeyDetector\KeyProviderFactoring.cs" />
      <Compile Include="Assets\Scripts\Context\NavigationController.cs" />
+     <Compile Include="Assets\Scripts\GameActors\Blocks\ProjectileBlockView.cs" />
+     <Compile Include="Assets\Scripts\GameActors\Blocks\Projectile.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />

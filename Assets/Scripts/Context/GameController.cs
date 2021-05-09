@@ -115,7 +115,7 @@ namespace Context
                 snapshot.Key.ApplySnapshot(snapshot.Value);
         }
 
-        private void Pick(SnakeController snake, BlockType blockType)
+        private void Pick(SnakeController snake)
         {
             var group = MatchGroupById(snake.Id);
             group.PauseGroup(true);
