@@ -12,14 +12,19 @@ namespace GameActors.Blocks
         public void AddSnapshot(IEnumerable<SnakeController> snakeControllers)
         {
             foreach (var snakeController in snakeControllers)
-                _snakeSnapshots.Add(snakeController, snakeController.GetSnapshot());
+                _snakeSnapshots[snakeController] = snakeController.GetSnapshot();
         }
 
         public Dictionary<SnakeController, SnakeSnapshot> Retrieve()
         {
             if (_snakeSnapshots.IsNullOrEmpty())
+            {
+                //this is a fallback to a bug that i could not reproduce
+                //where the block keep trying to retrieve and nothing is found
+                DisableBlock();
                 return _snakeSnapshots;
-            
+            }
+
             ContextProvider.Context.GameController.UI.ActivatePowerUpView(BlockType.TimeTravel);
             return _snakeSnapshots;
         }
@@ -27,5 +32,10 @@ namespace GameActors.Blocks
         public override object SnapshotPayload() => _snakeSnapshots;
         public void SetSnapshot(Dictionary<SnakeController, SnakeSnapshot> snapshots) 
             => _snakeSnapshots = snapshots;
+
+        public override void OnPick()
+        {
+            ContextProvider.Context.GameController.CreateSnapShot(this);
+        }
     }
 }

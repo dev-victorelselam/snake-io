@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using GameActors;
 
 namespace Game
@@ -7,9 +8,12 @@ namespace Game
     {
         public SnakeSnapshot(SnakeController snakeController)
         {
-            BlocksSnapshot = snakeController.Blocks.Select(view => new BlockSnapshot(view)).Reverse().ToArray();
+            BlocksSnapshot = snakeController.Blocks
+                .Select(view => new BlockSnapshot(view))
+                .Reverse()
+                .ToList();
         }
         
-        public BlockSnapshot[] BlocksSnapshot { get; }
+        public List<BlockSnapshot> BlocksSnapshot { get; }
     }
 }

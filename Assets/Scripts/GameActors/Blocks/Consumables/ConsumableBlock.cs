@@ -46,10 +46,6 @@ namespace GameActors.Blocks.Consumables
             StartCoroutine(StartChanging(blockTypes));
         }
 
-        public void OnPick()
-        {
-            if (_block is ProjectileBlockView projectileBlockView)
-                projectileBlockView.Shoot();
-        }
+        public void OnPick() => _block.OnPick();
     }
 }

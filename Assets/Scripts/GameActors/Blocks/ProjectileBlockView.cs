@@ -7,10 +7,15 @@ namespace GameActors.Blocks
     {
         [SerializeField] private Projectile _projectile;
         
-        public void Shoot()
+        private void Shoot()
         {
             _projectile.Activate(Extensions.RandomDirection());
             ContextProvider.Context.GameController.UI.ActivatePowerUpView(BlockType.Projectile);
+        }
+
+        public override void OnPick()
+        {
+            Shoot();
         }
     }
 }

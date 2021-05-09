@@ -51,10 +51,9 @@ namespace Context
         public void AddPlayer(PlayerModel playerModel)
         {
             var setup = _gameContext.GameSetup;
-            var spawnPoint = spawnPointsList.Spawns.GetRandom().Points;
 
-            var player = SpawnPlayer(setup.SnakePrefab, spawnPoint[0]);
-            var enemy = SpawnEnemy(setup.SnakePrefab, spawnPoint[1]);
+            var player = SpawnPlayer(setup.SnakePrefab);
+            var enemy = SpawnEnemy(setup.SnakePrefab);
             var block = SpawnBlock(setup.ConsumableBlockPrefab, player.transform, enemy.transform);
 
             var group = new MatchGroup(playerModel, player, enemy, block);
@@ -66,8 +65,11 @@ namespace Context
             SetupListeners(player.SnakeController);
             SetupListeners(enemy.SnakeController);
             
+            var spawnPoint = spawnPointsList.Spawns.GetRandom().Points;
             player.SetConfig(spawnPoint[0], playerModel);
             enemy.SetConfig(spawnPoint[1], playerModel);
+
+            CreateStartSnapshot(player.SnakeController, enemy.SnakeController);
         }
 
         private async void RespawnGroup(MatchGroup group)
@@ -137,7 +139,7 @@ namespace Context
                 _gameContext.NavigationController.UpdateUI(GameState.Tutorial);
         }
 
-        private void CreateSnapShot(TimeTravelBlockView blockView)
+        public void CreateSnapShot(TimeTravelBlockView blockView)
         {
             var allSnakes = _matchGroups.SelectMany(mg => mg.SnakeControllers);
             blockView.AddSnapshot(allSnakes);
@@ -159,16 +161,16 @@ namespace Context
             return block;
         }
 
-        private MovementController SpawnPlayer(GameObject snakePrefab, SpawnPoint spawnPoint)
+        private MovementController SpawnPlayer(GameObject snakePrefab)
         {
-            var player = InstantiateSnake(snakePrefab, spawnPoint)
+            var player = InstantiateSnake(snakePrefab)
                 .AddComponent<MovementController>();
             return player;
         }
 
-        private IAController SpawnEnemy(GameObject snakePrefab, SpawnPoint spawnPoint)
+        private IAController SpawnEnemy(GameObject snakePrefab)
         {
-            var enemy = InstantiateSnake(snakePrefab, spawnPoint).AddComponent<IAController>();
+            var enemy = InstantiateSnake(snakePrefab).AddComponent<IAController>();
             return enemy;
         }
 
@@ -176,12 +178,11 @@ namespace Context
         {
             snakeController.OnPick.AddListener(Pick);
             snakeController.OnDie.AddListener(Die);
-            snakeController.OnTimeTravelPoint.AddListener(CreateSnapShot);
             snakeController.OnRewind.AddListener(Rewind);
             snakeController.OnRemoveFromGame.AddListener(RemoveFromPlay);
         }
 
-        private GameObject InstantiateSnake(GameObject snakePrefab, SpawnPoint spawnPoint)
+        private GameObject InstantiateSnake(GameObject snakePrefab)
         {
             var obj = Instantiate(snakePrefab, _gameSpace);
             obj.transform.position = Vector3.zero;
@@ -191,5 +192,18 @@ namespace Context
 
         private Vector3 FairPosition(params Transform[] transforms) =>
             Extensions.FindFairPosition(transforms.Select(t => t.position).ToArray());
+
+        private void CreateStartSnapshot(SnakeController snake1, SnakeController snake2)
+        {
+            var timeTravelBlocks = snake1.Blocks
+                .Where(b => b is TimeTravelBlockView)
+                .Cast<TimeTravelBlockView>().ToList();
+            
+            timeTravelBlocks.AddRange(snake2.Blocks
+                .Where(b => b is TimeTravelBlockView)
+                .Cast<TimeTravelBlockView>().ToList()); 
+            
+            timeTravelBlocks.ForEach(CreateSnapShot);
+        }
     }
 }

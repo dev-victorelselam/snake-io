@@ -11,14 +11,15 @@ namespace Game
             Rotation = blockView.transform.localEulerAngles;
 
             BlockType = blockView.BlockType;
+            CurrentAngle = blockView.CurrentAngle;
             Payload = blockView.SnapshotPayload();
         }
         
         public Vector3 Position { get; }
         public Vector3 Rotation { get; }
-        
+        public int CurrentAngle { get; }
         public BlockType BlockType { get; }
-        
+
         //this can be used to store anything from future block features
         //for now we only use to store time travel
         public object Payload { get; }

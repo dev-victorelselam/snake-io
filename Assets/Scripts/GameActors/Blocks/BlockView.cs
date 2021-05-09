@@ -89,6 +89,7 @@ namespace GameActors.Blocks
         {
             OnBlockDisabled.Invoke(this);
             
+            //kind of a feedback of the block being disabled
             var mesh = GetComponentInChildren<MeshRenderer>();
             for (var i = 0; i < 4; i++) //500x4 = 2s
             {
@@ -106,10 +107,7 @@ namespace GameActors.Blocks
         public void OnTriggerEnter(Collider other)
         {
             if (CheckForAdjacentBlocks(other))
-            {
-                Debug.Log("Contact with my block!");
                 return;
-            }
 
             var hittable = other.gameObject.GetComponent<IHittable>();
             if (hittable == null)
@@ -144,6 +142,7 @@ namespace GameActors.Blocks
         public void SetPreviousPart(BlockView blockView) => _previous = blockView;
         public void SetBlockType(BlockType blockType) => BlockType = blockType;
         public void SetSnakeOwner(SnakeController snake) => SnakeController = snake;
+        public virtual void OnPick() {}
 
         public virtual object SnapshotPayload() => null;
     }

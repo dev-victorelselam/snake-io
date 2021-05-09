@@ -18,7 +18,6 @@ namespace GameActors
         public UnityEvent<SnakeController, SnakeController> OnDie { get; } = new UnityEvent<SnakeController, SnakeController>();
         public UnityEvent<SnakeController> OnRemoveFromGame { get; } = new UnityEvent<SnakeController>();
         public UnityEvent<SnakeController> OnPick { get; } = new UnityEvent<SnakeController>();
-        public UnityEvent<TimeTravelBlockView> OnTimeTravelPoint { get; } = new UnityEvent<TimeTravelBlockView>();
         public UnityEvent<TimeTravelBlockView> OnRewind { get; } = new UnityEvent<TimeTravelBlockView>();
         #endregion
         
@@ -134,9 +133,6 @@ namespace GameActors
             _blocks.Insert(0, obj);
 
             IterateBlocks(_blocks);
-            
-            if (obj.BlockType == BlockType.TimeTravel)
-                OnTimeTravelPoint.Invoke((TimeTravelBlockView) obj);
 
             return obj;
         }
@@ -204,7 +200,6 @@ namespace GameActors
                 case Projectile _ :
                     CheckForDeath();
                     break;
-                
             }
         }
 

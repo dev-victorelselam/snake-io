@@ -139,6 +139,8 @@ namespace Context
         {
             snakeController.Blocks.ForEach(b => Object.Destroy(b.gameObject));
             snakeController.Blocks.Clear();
+            
+            snakeController.DisableCollisions(0.5f);
 
             foreach (var blockSnapshot in snapshot.BlocksSnapshot)
             {
@@ -148,7 +150,8 @@ namespace Context
                     var timeTravel = (Dictionary<SnakeController, SnakeSnapshot>) blockSnapshot.Payload;
                     timeTravelBlockView.SetSnapshot(timeTravel);
                 }
-                
+
+                block.CurrentAngle = blockSnapshot.CurrentAngle;
                 block.transform.localPosition = blockSnapshot.Position;
                 block.transform.localEulerAngles = blockSnapshot.Rotation;
                 block.Collider.enabled = true;
