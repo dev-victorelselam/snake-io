@@ -19,8 +19,9 @@ namespace Context
         [SerializeField] private KeyDetector _keyDetector;
         
         private GameCanvas _gameUI;
-        private IContext _gameContext;
+        public GameCanvas UI => _gameUI;
         
+        private IContext _gameContext;
         private readonly List<MatchGroup> _matchGroups = new List<MatchGroup>();
 
         public void StartController()
@@ -52,15 +53,21 @@ namespace Context
             var setup = _gameContext.GameSetup;
             var spawnPoint = spawnPointsList.Spawns.GetRandom().Points;
 
-            var player = SpawnPlayer(setup.SnakePrefab, playerModel, spawnPoint[0]);
-            var enemy = SpawnEnemy(setup.SnakePrefab, playerModel, spawnPoint[1]);
+            var player = SpawnPlayer(setup.SnakePrefab, spawnPoint[0]);
+            var enemy = SpawnEnemy(setup.SnakePrefab, spawnPoint[1]);
             var block = SpawnBlock(setup.ConsumableBlockPrefab, player.transform, enemy.transform);
 
             var group = new MatchGroup(playerModel, player, enemy, block);
 
             _matchGroups.Add(group);
-            enemy.SetGroup(group);
             _gameUI.AddGroup(group);
+            enemy.SetGroup(group);
+            
+            SetupListeners(player.SnakeController);
+            SetupListeners(enemy.SnakeController);
+            
+            player.SetConfig(spawnPoint[0], playerModel);
+            enemy.SetConfig(spawnPoint[1], playerModel);
         }
 
         private async void RespawnGroup(MatchGroup group)
@@ -152,33 +159,26 @@ namespace Context
             return block;
         }
 
-        private MovementController SpawnPlayer(GameObject snakePrefab, PlayerModel playerModel, SpawnPoint spawnPoint)
+        private MovementController SpawnPlayer(GameObject snakePrefab, SpawnPoint spawnPoint)
         {
             var player = InstantiateSnake(snakePrefab, spawnPoint)
                 .AddComponent<MovementController>();
-
-            player.SnakeController.OnPick.AddListener(Pick);
-            player.SnakeController.OnDie.AddListener(Die);
-            player.SnakeController.OnTimeTravelPoint.AddListener(CreateSnapShot);
-            player.SnakeController.OnRewind.AddListener(Rewind);
-            player.SnakeController.OnRemoveFromGame.AddListener(RemoveFromPlay);
-            
-            player.SetConfig(spawnPoint, playerModel);
             return player;
         }
 
-        private IAController SpawnEnemy(GameObject snakePrefab, PlayerModel playerModel, SpawnPoint spawnPoint)
+        private IAController SpawnEnemy(GameObject snakePrefab, SpawnPoint spawnPoint)
         {
             var enemy = InstantiateSnake(snakePrefab, spawnPoint).AddComponent<IAController>();
-
-            enemy.SnakeController.OnPick.AddListener(Pick);
-            enemy.SnakeController.OnDie.AddListener(Die);
-            enemy.SnakeController.OnTimeTravelPoint.AddListener(CreateSnapShot);
-            enemy.SnakeController.OnRewind.AddListener(Rewind);
-            enemy.SnakeController.OnRemoveFromGame.AddListener(RemoveFromPlay);
-            
-            enemy.SetConfig(spawnPoint, playerModel);
             return enemy;
+        }
+
+        private void SetupListeners(SnakeController snakeController)
+        {
+            snakeController.OnPick.AddListener(Pick);
+            snakeController.OnDie.AddListener(Die);
+            snakeController.OnTimeTravelPoint.AddListener(CreateSnapShot);
+            snakeController.OnRewind.AddListener(Rewind);
+            snakeController.OnRemoveFromGame.AddListener(RemoveFromPlay);
         }
 
         private GameObject InstantiateSnake(GameObject snakePrefab, SpawnPoint spawnPoint)

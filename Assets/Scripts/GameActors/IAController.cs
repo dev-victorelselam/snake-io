@@ -39,6 +39,9 @@ namespace GameActors
 
         public void Update()
         {
+            if (!Head)
+                return;
+            
             _rightRaycast = GetRaycastInfo(Head.transform.right);
             _leftRaycast = GetRaycastInfo(-Head.transform.right);
             _forwardRaycast = GetRaycastInfo(Head.transform.up);

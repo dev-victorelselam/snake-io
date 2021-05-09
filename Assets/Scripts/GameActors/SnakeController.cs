@@ -113,10 +113,7 @@ namespace GameActors
             {
                 _name.transform.localPosition = Head.transform.localPosition + new Vector3(0, 2, -5);
                 _name.transform.eulerAngles = Vector3.zero;
-            }
-
-            if (_eyes)
-            {
+                
                 _eyes.transform.localPosition = Head.transform.localPosition + new Vector3(0, 0.5f, -5);
                 _eyes.transform.eulerAngles = Head.transform.eulerAngles;
             }

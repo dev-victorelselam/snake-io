@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Context;
 using Game;
 using GameActors;
@@ -20,6 +22,7 @@ namespace UI
         [Space(10)]
         [SerializeField] private VerticalLayoutGroup _textsContainer;
         [SerializeField] private Transform _notificationContainer;
+        [SerializeField] private PowerUpUI[] _powerUpsViews;
 
 
         public void StartUI()
@@ -39,7 +42,13 @@ namespace UI
 
         public async Task ActivatePowerUpView(BlockType blockType)
         {
+            var view = _powerUpsViews.FirstOrDefault(puv => puv.BlockType == blockType);
+            if (view == null)
+                return;
             
+            view.View.SetActive(true);
+            await Task.Delay(1500);
+            view.View.SetActive(false);
         }
 
         public void AddGroup(MatchGroup group)
@@ -58,5 +67,12 @@ namespace UI
             var notification = Instantiate(prefab, _notificationContainer);
             notification.Activate($"{killerSnake.Name} -> {deadSnake.Name}");
         }
+    }
+
+    [Serializable]
+    internal class PowerUpUI
+    {
+        public BlockType BlockType;
+        public GameObject View;
     }
 }

@@ -167,4 +167,17 @@ namespace Context
             return new Bounds(new Vector3(x, y, 0), new Vector3(width, height, 0));
         }
     }
+
+    public static class KeyCodeValue
+    {
+        public static List<KeyCode> OrganizeKeys(List<KeyCode> keys)
+        {
+            var dictio = new Dictionary<KeyCode, int>();
+            var availableKeys = ContextProvider.Context.GameSetup.AvailableKeys;
+            for (var i = 0; i < availableKeys.Length; i++)
+                dictio[availableKeys[i]] = i;
+
+            return keys.OrderBy(k => dictio[k]).ToList();
+        }
+    }
 }

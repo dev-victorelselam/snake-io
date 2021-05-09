@@ -36,7 +36,7 @@ namespace Tutorial.KeyDetector
                 return;
 
             var keys = _availableKeys.Available;
-            foreach (KeyCode keyCode in keys)
+            foreach (var keyCode in keys)
             {
                 if (_keyProvider.GetKey(keyCode))
                 {
@@ -65,9 +65,7 @@ namespace Tutorial.KeyDetector
                         
                     if (_keys.Count >= 2)
                     {
-                        Debug.Log($"Finish with: {_keys[0]} and {_keys[1]}");
-                        
-                        OnComplete.Invoke(_keys);
+                        OnComplete.Invoke(KeyCodeValue.OrganizeKeys(_keys));
                         Disable();
                     }
                 }

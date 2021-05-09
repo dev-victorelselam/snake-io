@@ -16,7 +16,7 @@ namespace _Tests.KeyDetector
         public async void Awake()
         {
             Context = new TestContext(_navigationController, _gameController, _popupUtility, GameSetup);
-            Setup("[HintTest]");
+            Setup("[KeyDetectorTest]");
 
             var keyDetector = gameObject.AddComponent<Tutorial.KeyDetector.KeyDetector>();
             keyDetector.OnComplete.AddListener(KeysDetected);
@@ -26,10 +26,14 @@ namespace _Tests.KeyDetector
                 await Task.Delay(50);
         
             Assert(() => _keysDetected[0])
-                .ShouldBe(KeyCode.A).Because($"Test Key Provider specified that {KeyCode.A} is the first key").Run();
+                .ShouldBe(KeyCode.A)
+                .Because($"Keys to the left of keyboard should be first")
+                .Run();
         
             Assert(() => _keysDetected[1])
-                .ShouldBe(KeyCode.D).Because($"Test Key Provider specified that {KeyCode.D} is the second key").Run();
+                .ShouldBe(KeyCode.D)
+                .Because($"Keys to the right of keyboard should be second")
+                .Run();
         
             Finish();
         }

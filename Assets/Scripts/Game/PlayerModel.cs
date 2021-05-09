@@ -16,8 +16,6 @@ namespace Game
     
     public class PlayerModel
     {
-        public readonly UnityEvent OnUpdate = new UnityEvent();
-        
         internal PlayerModel(int id, Color color)
         {
             Color = color;
@@ -31,6 +29,5 @@ namespace Game
         public CharacterSettings Character { get; set; }
         public KeyCode LeftKey { get; set; }
         public KeyCode RightKey { get; set; }
-        
     }
 }

@@ -10,6 +10,7 @@ namespace GameActors.Blocks
         public void Shoot()
         {
             _projectile.Activate(Extensions.RandomDirection());
+            ContextProvider.Context.GameController.UI.ActivatePowerUpView(BlockType.Projectile);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Context;
 
 namespace GameActors.Blocks
 {
@@ -15,6 +16,7 @@ namespace GameActors.Blocks
             contactBlock.DisableBlock();
             DisableBlock();
 
+            ContextProvider.Context.GameController.UI.ActivatePowerUpView(BlockType.BatteringRam);
             return true;
         }
     }

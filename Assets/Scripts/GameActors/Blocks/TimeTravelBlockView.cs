@@ -15,8 +15,15 @@ namespace GameActors.Blocks
                 _snakeSnapshots.Add(snakeController, snakeController.GetSnapshot());
         }
 
-        public Dictionary<SnakeController, SnakeSnapshot> Retrieve() => _snakeSnapshots;
-        
+        public Dictionary<SnakeController, SnakeSnapshot> Retrieve()
+        {
+            if (_snakeSnapshots.IsNullOrEmpty())
+                return _snakeSnapshots;
+            
+            ContextProvider.Context.GameController.UI.ActivatePowerUpView(BlockType.TimeTravel);
+            return _snakeSnapshots;
+        }
+
         public override object SnapshotPayload() => _snakeSnapshots;
         public void SetSnapshot(Dictionary<SnakeController, SnakeSnapshot> snapshots) 
             => _snakeSnapshots = snapshots;
