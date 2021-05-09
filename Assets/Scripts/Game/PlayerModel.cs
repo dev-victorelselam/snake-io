@@ -32,19 +32,5 @@ namespace Game
         public KeyCode LeftKey { get; set; }
         public KeyCode RightKey { get; set; }
         
-
-        //observer pattern for score
-        private int _score;
-        public int Score
-        {
-            get => _score;
-            set
-            {
-                _score = value;
-                OnUpdate.Invoke();
-            }
-        }
-
-        public string GetScore() => $"{Username}: {_score}";
     }
 }

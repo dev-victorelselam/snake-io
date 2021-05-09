@@ -1,4 +1,5 @@
 ﻿using GameActors.Blocks.Consumables;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -56,15 +57,17 @@ namespace Context
         
         [Header("Snake Gameplay Configs")]
         [Space(10)]
-        [Range(5, 100)] public float BaseSpeed;
-        [Range(0, 1)] public float LoadedSpeedDecay;
-        [Range(0, 10)] public int BlockScore;
+        [Range(5, 100)] public float BaseSpeed = 10;
+        [Range(0, 1)] public float LoadedSpeedDecay = 0.5f;
+        [Range(0, 10)] public int BlockScore = 2;
+        [Range(0, 10)] public int KillScore = 1;
         
         [Header("Prefabs")]
         [Space(10)]
         public GameObject SnakePrefab;
         public ConsumableBlock ConsumableBlockPrefab;
-        public Text PlayerScorePrefab;
+        public ScoreView PlayerScorePrefab;
+        public Notification NotificationPrefab;
         public BlockModel[] Blocks;
     }
 }

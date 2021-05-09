@@ -1,6 +1,4 @@
-﻿using System;
-using Game;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Context
 {
@@ -14,31 +12,9 @@ namespace Context
         
         private void Start()
         {
-            new GameContext(_navigationController, _gameController, _popupUtility, _gameSetup);
+            _ = new GameContext(_navigationController, _gameController, _popupUtility, _gameSetup);
             _gameController.StartController();
             _navigationController.StartController();
-            
-            _navigationController.OnStateChanged.AddListener(UpdateState);
-        }
-
-        private void UpdateState(GameState state)
-        {
-            switch (state)
-            {
-                case GameState.None:
-                    break;
-                case GameState.PreGame:
-                    _gameController.StopGame();
-                    break;
-                case GameState.Tutorial:
-                    _gameController.PauseGame(true);
-                    break;
-                case GameState.Game:
-                    _gameController.StartGame();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(state), state, null);
-            }
         }
     }
 }

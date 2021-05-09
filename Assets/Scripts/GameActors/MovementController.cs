@@ -6,8 +6,6 @@ namespace GameActors
     public class MovementController : MonoBehaviour
     {
         private SnakeController _snakeController;
-        private PlayerModel _playerModel;
-
         public SnakeController SnakeController
         {
             get
@@ -17,6 +15,9 @@ namespace GameActors
                 return _snakeController;
             }
         }
+        
+        private PlayerModel _playerModel;
+        public PlayerModel PlayerModel => _playerModel;
 
         public void SetConfig(SpawnPoint spawn, PlayerModel playerModel)
         {

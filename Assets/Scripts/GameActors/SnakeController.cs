@@ -15,11 +15,11 @@ namespace GameActors
     public class SnakeController : MonoBehaviour, ISpeedable
     {
         #region Events
-        public UnityEvent<SnakeController> OnDie { get; } = new UnityEvent<SnakeController>();
+        public UnityEvent<SnakeController, SnakeController> OnDie { get; } = new UnityEvent<SnakeController, SnakeController>();
+        public UnityEvent<SnakeController> OnRemoveFromGame { get; } = new UnityEvent<SnakeController>();
         public UnityEvent<SnakeController> OnPick { get; } = new UnityEvent<SnakeController>();
         public UnityEvent<TimeTravelBlockView> OnTimeTravelPoint { get; } = new UnityEvent<TimeTravelBlockView>();
         public UnityEvent<TimeTravelBlockView> OnRewind { get; } = new UnityEvent<TimeTravelBlockView>();
-        public UnityEvent<SnakeController> OnKill { get; } = new UnityEvent<SnakeController>();
         #endregion
         
         #region Interface
@@ -43,9 +43,12 @@ namespace GameActors
         private Coroutine _updateRoutine;
         private bool _paused;
         private bool _collisionEnabled;
+        
+        public string Name { get; private set; }
 
         public void Initialize(SpawnPoint spawn, PlayerModel playerModel, string snakeName)
         {
+            Name = snakeName;
             _playerModel = playerModel;
             _name.text = snakeName;
             _name.color = playerModel.Color;
@@ -128,6 +131,7 @@ namespace GameActors
         private BlockView AddBlock(BlockView obj)
         {
             obj.transform.SetSiblingIndex(0);
+            obj.SetSnakeOwner(this);
             obj.OnContact.AddListener(CheckCollision);
             obj.OnBlockDisabled.AddListener(DisableBlock);
             _blocks.Insert(0, obj);
@@ -152,8 +156,8 @@ namespace GameActors
 
             if (_blocks.IsNullOrEmpty())
             {
-                //todo: notify game controller that this player is out
-                //todo: make a "kills feed"
+                OnRemoveFromGame.Invoke(this);
+                return;
             }
             
             IterateBlocks(_blocks);
@@ -199,8 +203,6 @@ namespace GameActors
                     
                     if (myBlock.IsHead)
                         CheckForDeath(colliderBlock);
-                    else
-                        OnKill.Invoke(this);
                     break;
                 
                 case Projectile _ :
@@ -220,7 +222,6 @@ namespace GameActors
                     if (batteringRam.ActivateBatteringRam(this, colliderBlock))
                         return;
                 }
-                Debug.Log($"{gameObject.name} Die by: {colliderBlock.transform.parent.name}");
             }
 
             if (HasBlockOfType(BlockType.TimeTravel))
@@ -233,7 +234,8 @@ namespace GameActors
             }
 
             Pause(true);
-            OnDie.Invoke(this);
+            var killerSnake = colliderBlock == null ? null : colliderBlock.SnakeController;
+            OnDie.Invoke(this, killerSnake);
         }
 
         public async void DisableCollisions(float duration)

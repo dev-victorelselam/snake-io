@@ -32,31 +32,23 @@ namespace Context
         public void StartGame()
         {
             _keyDetector.StartListen();
-            _keyDetector.OnComplete.AddListener(OnNewPlayer);
+            
+            _keyDetector.OnComplete.RemoveAllListeners();
+            _keyDetector.OnComplete.AddListener(NewPlayer);
+            PauseGame(false);
         }
 
-        private void OnNewPlayer(List<KeyCode> playerKeys)
+        private void NewPlayer(List<KeyCode> playerKeys)
         {
             //identify new player
+            PauseGame(true);
             _gameContext.NavigationController.UpdateUI(GameState.Tutorial);
         }
 
-        public void PauseGame(bool pause)
-        {
-            if (pause)
-            {
-                
-            }
-        }
-
-        public void StopGame()
-        {
-            _gameContext.NavigationController.UpdateUI(GameState.PreGame);
-        }
+        public void PauseGame(bool pause) => _matchGroups.ForEach(mg => mg.PauseGroup(pause));
 
         public void AddPlayer(PlayerModel playerModel)
         {
-            _gameUI.AddPlayer(playerModel);
             var setup = _gameContext.GameSetup;
             var spawnPoint = spawnPointsList.Spawns.GetRandom().Points;
 
@@ -68,6 +60,7 @@ namespace Context
 
             _matchGroups.Add(group);
             enemy.SetGroup(group);
+            _gameUI.AddGroup(group);
         }
 
         private async void RespawnGroup(MatchGroup group)
@@ -87,22 +80,26 @@ namespace Context
             group.Block = block;
             group.PauseGroup(false);
         }
-        
-        private void Kill(SnakeController snake)
-        {
-            var group = MatchGroupById(snake.Id);
-            
-            if (snake == group.Player.SnakeController)
-                group.PlayerModel.Score += _gameContext.GameSetup.BlockScore;
-        }
 
-        private void Die(SnakeController snake)
+        private void Die(SnakeController deadSnake, SnakeController killerSnake)
+        {
+            var deadSnakeGroup = MatchGroupById(deadSnake.Id);
+            deadSnakeGroup.PauseGroup(true);
+            deadSnakeGroup.UpdateScore(deadSnake, -_gameContext.GameSetup.KillScore);
+            
+            var killerSnakeGroup = MatchGroupById(killerSnake.Id);
+            killerSnakeGroup.UpdateScore(killerSnake, _gameContext.GameSetup.KillScore);
+
+            _gameUI.NotifyKill(deadSnake, killerSnake);
+
+            RespawnGroup(deadSnakeGroup);
+        }
+        
+        private void Pick(SnakeController snake)
         {
             var group = MatchGroupById(snake.Id);
             group.PauseGroup(true);
-
-            if (snake == group.Player.SnakeController) //when die, remove score
-                group.PlayerModel.Score -= 1;
+            group.UpdateScore(snake, _gameContext.GameSetup.BlockScore); //when pick a block, add score
             
             RespawnGroup(group);
         }
@@ -115,15 +112,22 @@ namespace Context
                 snapshot.Key.ApplySnapshot(snapshot.Value);
         }
 
-        private void Pick(SnakeController snake)
+        private void RemoveFromPlay(SnakeController snake)
         {
             var group = MatchGroupById(snake.Id);
-            group.PauseGroup(true);
+            _matchGroups.Remove(group);
             
-            if (snake == group.Player.SnakeController) //when pick a block, add score
-                group.PlayerModel.Score += _gameContext.GameSetup.BlockScore;
+            _gameContext.AvailableKeys.AddAvailableKey(group.Player.PlayerModel.LeftKey);
+            _gameContext.AvailableKeys.AddAvailableKey(group.Player.PlayerModel.RightKey);
             
-            RespawnGroup(group);
+            Destroy(group.Player.gameObject);
+            Destroy(group.Enemy.gameObject);
+            Destroy(group.Block);
+
+            group.OnRemoveFromPlay.Invoke();
+            
+            if (_matchGroups.IsNullOrEmpty())
+                _gameContext.NavigationController.UpdateUI(GameState.Tutorial);
         }
 
         private void CreateSnapShot(TimeTravelBlockView blockView)
@@ -155,9 +159,9 @@ namespace Context
 
             player.SnakeController.OnPick.AddListener(Pick);
             player.SnakeController.OnDie.AddListener(Die);
-            player.SnakeController.OnKill.AddListener(Kill);
             player.SnakeController.OnTimeTravelPoint.AddListener(CreateSnapShot);
             player.SnakeController.OnRewind.AddListener(Rewind);
+            player.SnakeController.OnRemoveFromGame.AddListener(RemoveFromPlay);
             
             player.SetConfig(spawnPoint, playerModel);
             return player;
@@ -169,9 +173,9 @@ namespace Context
 
             enemy.SnakeController.OnPick.AddListener(Pick);
             enemy.SnakeController.OnDie.AddListener(Die);
-            enemy.SnakeController.OnKill.AddListener(Kill);
             enemy.SnakeController.OnTimeTravelPoint.AddListener(CreateSnapShot);
             enemy.SnakeController.OnRewind.AddListener(Rewind);
+            enemy.SnakeController.OnRemoveFromGame.AddListener(RemoveFromPlay);
             
             enemy.SetConfig(spawnPoint, playerModel);
             return enemy;

@@ -45,8 +45,9 @@ namespace Tutorial
 
         private void StartGame(PlayerModel playerModel)
         {
-            _context.GameController.AddPlayer(playerModel);
             _context.NavigationController.UpdateUI(GameState.Game);
+            _context.GameController.AddPlayer(playerModel);
+            _context.GameController.StartGame();
         }
 
         public void Deactivate()

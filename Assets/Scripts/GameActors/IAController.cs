@@ -198,8 +198,6 @@ namespace GameActors
 
         private void ActionByDirection(Action up, Action down, Action right, Action left)
         {
-            Debug.Log($"IA Angle: {Head.CurrentAngle}");
-            
             if (Math.Abs(Head.CurrentAngle - Angle.Up) < 0.1f)
                 up?.Invoke();
             else if (Math.Abs(Head.CurrentAngle - Angle.Down) < 0.1f)

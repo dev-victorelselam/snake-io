@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Context;
 using Game;
+using GameActors;
 using GameActors.Blocks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,6 +19,7 @@ namespace UI
         [SerializeField] private Transform _container;
         [Space(10)]
         [SerializeField] private VerticalLayoutGroup _textsContainer;
+        [SerializeField] private Transform _notificationContainer;
 
 
         public void StartUI()
@@ -35,20 +37,26 @@ namespace UI
             
         }
 
-        public async Task ActivatePowerUp(BlockType blockType)
+        public async Task ActivatePowerUpView(BlockType blockType)
         {
             
         }
 
-        public void AddPlayer(PlayerModel playerModel)
+        public void AddGroup(MatchGroup group)
         {
             var prefab = _context.GameSetup.PlayerScorePrefab;
-            var text = Instantiate(prefab, _textsContainer.transform);
+            var player = Instantiate(prefab, _textsContainer.transform);
+            var ia = Instantiate(prefab, _textsContainer.transform);
             
-            text.text = playerModel.GetScore();
-            text.color = playerModel.Color;
-            
-            playerModel.OnUpdate.AddListener(() => text.text = playerModel.GetScore());
+            player.SetSnake(group, group.Player.SnakeController);
+            ia.SetSnake(group, group.Enemy.SnakeController);
+        }
+
+        public void NotifyKill(SnakeController deadSnake, SnakeController killerSnake)
+        {
+            var prefab = _context.GameSetup.NotificationPrefab;
+            var notification = Instantiate(prefab, _notificationContainer);
+            notification.Activate($"{killerSnake.Name} -> {deadSnake.Name}");
         }
     }
 }
