@@ -14,6 +14,8 @@ I planned to assign the Keys automatically in this scenario, but this would requ
 
 5 - There are lots of comments in the code, but if you become in doubt of something, don't hesitate to ask me :)
 
-6 - The architecture diagram is located in Assets/
+6 - The main scene to Play is located in Assets/Scenes/GameScene
+
+7 - The architecture diagram is located in Assets/
 
 
